@@ -1,0 +1,625 @@
+{% load static %}
+
+
+<aside style="z-index: 1;" class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="/">
+        <img src="{% static "assets/img/logo-ct-dark.png" %}" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">
+          Django Material PRO
+        </span>
+      </a>
+    </div>
+
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto h-auto" id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        {% if request.user.is_authenticated %}
+        <li class="nav-item mb-2 mt-0">
+          <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-dark" aria-controls="ProfileNav" role="button" aria-expanded="false">
+            <img src="{% static "assets/img/team-3.jpg" %}" class="avatar">
+            <span class="nav-link-text ms-2 ps-1">
+              {{ request.user.username }}
+            </span>
+          </a>
+          <div class="collapse" id="ProfileNav" style="">
+            <ul class="nav ">
+              <li class="nav-item">
+                <a class="nav-link text-dark" href="{% url 'user_profile' %}">
+                  <span class="sidenav-mini-icon"> MP </span>
+                  <span class="sidenav-normal  ms-3  ps-1"> My Profile</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-dark " href="{% url 'logout' %}">
+                  <span class="sidenav-mini-icon"> L </span>
+                  <span class="sidenav-normal  ms-3  ps-1"> Logout</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <hr class="horizontal dark mt-0">
+        {% endif %}        
+
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#apps" class="nav-link text-dark {% if parent == 'apps' %}active{% endif %}" aria-controls="apps" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5">apps</i>
+            <span class="nav-link-text ms-1 ps-1">Apps</span>
+          </a>
+          <div class="collapse {% if 'apps' in parent %}show{% endif %}" id="apps">
+            <ul class="nav ">
+              <li class="nav-item {% if 'dynamic_dt' in segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'dynamic_dt' in segment %}active{% endif %}" href="{% url 'dynamic_dt' %}">
+                  <span class="sidenav-mini-icon"> A </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Dynamic DT </span>
+                </a>
+              </li>  
+              <li class="nav-item {% if 'dynamic_api' in segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'dynamic_api' in segment %}active{% endif %}" href="{% url "dynamic_api" %}" >
+                  <span class="sidenav-mini-icon"> D </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Dynamic API </span>
+                </a>
+              </li>      
+              <li class="nav-item {% if 'charts' == segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'charts' == segment %}active{% endif %}" href="{% url 'charts' %}">
+                  <span class="sidenav-mini-icon"> A </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Charts </span>
+                </a>
+              </li>
+              <li class="nav-item {% if 'react_charts' == segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'react_charts' == segment %}active{% endif %}" href="{% url 'react_charts' %}">
+                  <span class="sidenav-mini-icon"> A </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Charts (React) </span>
+                </a>
+              </li>
+              <li class="nav-item {% if 'file_manager' in segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'file_manager' in segment %}active{% endif %}" href="{% url 'file_manager' %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> File Manager </span>
+                </a>
+              </li>
+              <li class="nav-item {% if 'profile' in segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'profile' in segment %}active{% endif %}" href="{% url 'user_profile' %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Profile </span>
+                </a>
+              </li>
+              <li class="nav-item {% if 'tasks' in segment %}active{% endif %}">
+                <a class="nav-link text-dark {% if 'tasks' in segment %}active{% endif %}" href="{% url "tasks" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-2  ps-1"> Tasks </span>
+                </a>
+              </li>        
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link text-dark {% if parent == 'dashboard' %}active{% endif %}" aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5">space_dashboard</i>
+            <span class="nav-link-text ms-1 ps-1">Dashboards</span>
+          </a>
+          <div class="collapse  {% if parent == 'dashboard' %}show{% endif %} " id="dashboardsExamples">
+            <ul class="nav ">
+              <li class="nav-item {% if segment == 'analytics' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'analytics' %}active{% endif %}" href="{% url "index" %}">
+                  <span class="sidenav-mini-icon"> A </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Analytics </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'discover' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'discover' %}active{% endif %}" href="{% url "discover" %}">
+                  <span class="sidenav-mini-icon"> D </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Discover </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'sales' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'sales' %}active{% endif %}" href="{% url "sales" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Sales </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'automotive' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'automotive' %}active{% endif %}" href="{% url "automotive" %}">
+                  <span class="sidenav-mini-icon"> A </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Automotive </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'smart_home' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'smart_home' %}active{% endif %}" href="{% url "smart_home" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Smart Home </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+
+
+        <li class="nav-item mt-3">
+          <h6 class="ps-3  ms-2 text-uppercase text-xs font-weight-bolder text-dark">PAGES</h6>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#pagesExamples" class="nav-link text-dark {% if parent == 'pages' %}active{% endif %}" aria-controls="pagesExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">contract</i>
+            <span class="nav-link-text ms-1 ps-1">Pages</span>
+          </a>
+          <div class="collapse {% if parent == 'pages' %}show{% endif %}" id="pagesExamples">
+            <ul class="nav ">
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples">
+                  <span class="sidenav-mini-icon"> V </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Virtual Reality <b class="caret"></b></span>
+                </a>
+                <div class="collapse {% if sub_parent == 'vr' %}show{% endif %}" id="vrExamples">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'vr_default' %}active{% endif %}" href="{% url "vr_default" %}">
+                        <span class="sidenav-mini-icon"> V </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> VR Default </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "vr_info" %}">
+                        <span class="sidenav-mini-icon"> V </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> VR Info </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark " href="{% url "pricing" %}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Pricing Page </span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark " href="{% url "rtl" %}">
+                  <span class="sidenav-mini-icon"> R </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> RTL </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'widgets' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'widgets' %}active{% endif %}" href="{% url "widgets" %}">
+                  <span class="sidenav-mini-icon"> W </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Widgets </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'charts' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'charts' %}active{% endif %}" href="{% url "page_charts" %}">
+                  <span class="sidenav-mini-icon"> C </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Charts </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'sweet_alerts' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'sweet_alerts' %}active{% endif %}" href="{% url "sweet_alerts" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Sweet Alerts </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'notifications' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'notifications' %}active{% endif %}" href="{% url "notifications" %}">
+                  <span class="sidenav-mini-icon"> N </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Notifications </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#accountExamples" class="nav-link text-dark {% if parent == 'accounts' %}active{% endif %}" aria-controls="accountExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">account_circle</i>
+            <span class="nav-link-text ms-1 ps-1">Account</span>
+          </a>
+          <div class="collapse {% if parent == 'accounts' %}show{% endif %}" id="accountExamples">
+            <ul class="nav ">
+              <li class="nav-item {% if segment == 'settings' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'settings' %}active{% endif %}" href="{% url "settings" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Settings </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'billing' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'billing' %}active{% endif %}" href="{% url "billing" %}">
+                  <span class="sidenav-mini-icon"> B </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Billing </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'invoice' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'invoice' %}active{% endif %}" href="{% url "invoice" %}">
+                  <span class="sidenav-mini-icon"> I </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Invoice </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'security' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'security' %}active{% endif %}" href="{% url "security" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Security </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#applicationsExamples" class="nav-link text-dark {% if parent == 'applications' %}active{% endif %}" aria-controls="applicationsExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">apps</i>
+            <span class="nav-link-text ms-1 ps-1">Applications</span>
+          </a>
+          <div class="collapse {% if parent == 'applications' %}show{% endif %}" id="applicationsExamples">
+            <ul class="nav ">
+              <li class="nav-item {% if segment == 'crm' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'crm' %}active{% endif %}" href="{% url "crm" %}">
+                  <span class="sidenav-mini-icon"> C </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> CRM </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'kanban' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'kanban' %}active{% endif %}" href="{% url "kanban" %}">
+                  <span class="sidenav-mini-icon"> K </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Kanban </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'wizard' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'wizard' %}active{% endif %}" href="{% url "wizard" %}">
+                  <span class="sidenav-mini-icon"> W </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Wizard </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'datatables' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'datatables' %}active{% endif %}" href="{% url "datatables" %}">
+                  <span class="sidenav-mini-icon"> D </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> DataTables </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'calendar' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'calendar' %}active{% endif %}" href="{% url "calendar" %}">
+                  <span class="sidenav-mini-icon"> C </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Calendar </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'stats' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'stats' %}active{% endif %}" href="{% url "stats" %}">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Stats </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'validation' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'validation' %}active{% endif %}" href="{% url "validation" %}">
+                  <span class="sidenav-mini-icon"> V </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Validation </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#ecommerceExamples" class="nav-link text-dark {% if parent == 'ecommerce' %}active{% endif %}" aria-controls="ecommerceExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">storefront</i>
+            <span class="nav-link-text ms-1 ps-1">Ecommerce</span>
+          </a>
+          <div class="collapse {% if parent == 'ecommerce' %}show {% endif %}" id="ecommerceExamples">
+            <ul class="nav ">
+              <li class="nav-item ">
+                <a class="nav-link text-dark {% if sub_parent == 'products' %}active{% endif %}" data-bs-toggle="collapse" aria-expanded="false" href="#productsExample">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Products <b class="caret"></b></span>
+                </a>
+                <div class="collapse {% if sub_parent == 'products' %}show{% endif %}" id="productsExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'new_product' %}active{% endif %}" href="{% url "new_product" %}">
+                        <span class="sidenav-mini-icon"> N </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> New Product </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'edit_product' %}active{% endif %}" href="{% url "edit_product" %}">
+                        <span class="sidenav-mini-icon"> E </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Edit Product </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'product_page' %}active{% endif %}" href="{% url "product_page" %}">
+                        <span class="sidenav-mini-icon"> P </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Product Page </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'products_list' %}active{% endif %}" href="{% url "products_list" %}">
+                        <span class="sidenav-mini-icon"> P </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Products List </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark {% if sub_parent == 'orders' %}active{% endif %}" data-bs-toggle="collapse" aria-expanded="false" href="#ordersExample">
+                  <span class="sidenav-mini-icon"> O </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Orders <b class="caret"></b></span>
+                </a>
+                <div class="collapse {% if sub_parent == 'orders' %}show{% endif %}" id="ordersExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'order_list' %}active{% endif %}" href="{% url "order_list" %}">
+                        <span class="sidenav-mini-icon"> O </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Order List </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark {% if segment == 'order_details' %}active{% endif %}" href="{% url "order_details" %}">
+                        <span class="sidenav-mini-icon"> O </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Order Details </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item {% if segment == 'referral' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'referral' %}active{% endif %}" href="{% url "referral" %}">
+                  <span class="sidenav-mini-icon"> R </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Referral </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#profileExamples" class="nav-link text-dark {% if parent == 'team' %}active{% endif %}" aria-controls="profileExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">group</i>
+            <span class="nav-link-text ms-1 ps-1">Team</span>
+          </a>
+          <div class="collapse {% if parent == 'team' %}show{% endif %}" id="profileExamples">
+            <ul class="nav ">
+              <li class="nav-item {% if segment == 'projects' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'projects' %}active{% endif %}" href="{% url "projects" %}">
+                  <span class="sidenav-mini-icon"> A </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> All Projects </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'messages' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'messages' %}active{% endif %}" href="{% url "messages" %}">
+                  <span class="sidenav-mini-icon"> M </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Messages </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'new_user' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'new_user' %}active{% endif %}" href="{% url "new_user" %}">
+                  <span class="sidenav-mini-icon"> N </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> New User </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'profile_overview' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'profile_overview' %}active{% endif %}" href="{% url "profile_overview" %}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Profile Overview </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'reports' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'reports' %}active{% endif %}" href="{% url "reports" %}">
+                  <span class="sidenav-mini-icon"> R </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Reports </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#projectsExamples" class="nav-link text-dark {% if parent == 'projects' %}active{% endif %}" aria-controls="projectsExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">widgets</i>
+            <span class="nav-link-text ms-1 ps-1">Projects</span>
+          </a>
+          <div class="collapse {% if parent == 'projects' %}show{% endif %}" id="projectsExamples">
+            <ul class="nav ">
+              <li class="nav-item {% if segment == 'general' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'general' %}active{% endif %}" href="{% url "general" %}">
+                  <span class="sidenav-mini-icon"> G </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> General </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'timeline' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'timeline' %}active{% endif %}" href="{% url "timeline" %}">
+                  <span class="sidenav-mini-icon"> T </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Timeline </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'new_project' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'new_project' %}active{% endif %}" href="{% url "new_project" %}">
+                  <span class="sidenav-mini-icon"> N </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> New Project </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#authExamples" class="nav-link text-dark " aria-controls="authExamples" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">tv_signin</i>
+            <span class="nav-link-text ms-1 ps-1">Authentication</span>
+          </a>
+          <div class="collapse " id="authExamples">
+            <ul class="nav ">
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#signinExample">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Sign In <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="signinExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "basic_login" %}">
+                        <span class="sidenav-mini-icon"> B </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Basic </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "cover_login" %}">
+                        <span class="sidenav-mini-icon"> C </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Cover </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "illustration_login" %}">
+                        <span class="sidenav-mini-icon"> I </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Illustration </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#signupExample">
+                  <span class="sidenav-mini-icon"> S </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Sign Up <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="signupExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "basic_register" %}">
+                        <span class="sidenav-mini-icon"> B </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Basic </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "cover_register" %}">
+                        <span class="sidenav-mini-icon"> C </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Cover </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "illustration_register" %}">
+                        <span class="sidenav-mini-icon"> I </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Illustration </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              {% if request.user.is_authenticated %}
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#resetExample">
+                  <span class="sidenav-mini-icon"> R </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Reset Password <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="resetExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "basic_reset" %}">
+                        <span class="sidenav-mini-icon"> B </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Basic </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "cover_reset" %}">
+                        <span class="sidenav-mini-icon"> C </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Cover </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "illustration_reset" %}">
+                        <span class="sidenav-mini-icon"> I </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Illustration </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#lockExample">
+                  <span class="sidenav-mini-icon"> L </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Lock <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="lockExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "basic_lock" %}">
+                        <span class="sidenav-mini-icon"> B </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Basic </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "cover_lock" %}">
+                        <span class="sidenav-mini-icon"> C </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Cover </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "illustration_lock" %}">
+                        <span class="sidenav-mini-icon"> I </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Illustration </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#StepExample">
+                  <span class="sidenav-mini-icon"> 2 </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> 2-Step Verification <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="StepExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "basic_verification" %}">
+                        <span class="sidenav-mini-icon"> B </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Basic </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "cover_verification" %}">
+                        <span class="sidenav-mini-icon"> C </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Cover </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "illustration_verification" %}">
+                        <span class="sidenav-mini-icon"> I </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Illustration </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#errorExample">
+                  <span class="sidenav-mini-icon"> E </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Error <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="errorExample">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "error_404" %}">
+                        <span class="sidenav-mini-icon"> E </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Error 404 </span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-dark " href="{% url "error_500" %}">
+                        <span class="sidenav-mini-icon"> E </span>
+                        <span class="sidenav-normal  ms-1  ps-1"> Error 500 </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <hr class="horizontal dark" />
+          <h6 class="ps-3  ms-2 text-uppercase text-xs font-weight-bolder text-dark">DOCS</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html">
+            <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">receipt_long</i>
+            <span class="nav-link-text ms-1 ps-1">Documentation</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+</aside>

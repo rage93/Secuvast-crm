@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "includes/head.html" %}
+    {% block extrastyle %}{% endblock extrastyle %}
+</head>
+
+<body class="">
+    {% block navigation %}
+        {% include "includes/navigation-shadow.html" %}
+    {% endblock navigation %}
+
+    {% block content %}{% endblock content %}
+
+    {% include "includes/scripts.html" %}
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+
+</html>
