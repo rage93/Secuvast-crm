@@ -1,19 +1,11 @@
-{% extends "layouts/base-fullscreen.html" %}
-{% block content %}
-<div class="container py-4">
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <div class="card">
-        <div class="card-header"><h5 class="mb-0">Create Company</h5></div>
-        <div class="card-body">
-          <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Continue</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+{% extends "layouts/wizard_form.html" %}
+
+{% block title %}Create Company{% endblock %}
+{% block subtitle %}Set up your organization details{% endblock %}
+
+{% block form_fields %}
+  {{ form.as_p }}
 {% endblock %}
+
+{% block submit_label %}Continue{% endblock %}
+

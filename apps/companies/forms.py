@@ -2,15 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Company
 
-PLAN_CHOICES = (
-    ("free", "Free"),
-    ("pro", "Pro"),
-)
-
 class CompanySignupForm(forms.Form):
     company_name = forms.CharField(max_length=255)
     subdomain = forms.SlugField()
-    plan = forms.ChoiceField(choices=PLAN_CHOICES)
     username = forms.CharField(max_length=150)
     email = forms.EmailField()
     password1 = forms.CharField(widget=forms.PasswordInput)
