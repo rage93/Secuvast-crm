@@ -47,6 +47,10 @@ Only the first administrator should create an account using the company sign-up 
 This flow creates both the user and the company. Additional members are invited from the
 administration area once signed in.
 
+When running locally, add entries to your `hosts` file so subdomains resolve to
+`127.0.0.1` (e.g. `myco.localhost`). After authentication, users are
+automatically redirected to their company subdomain.
+
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)
 
 - Understand the codebase structure
