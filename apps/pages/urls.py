@@ -4,8 +4,10 @@ from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
+    # Public landing
+    path('', views.landing, name="landing"),
     # Dashboard
-    path('', views.analytics, name="index"),
+    path('dashboard/', views.analytics, name="index"),
     path('discover/', views.discover, name="discover"),
     path('sales/', views.sales, name="sales"),
     path('automotive/', views.automotive, name="automotive"),
@@ -33,7 +35,7 @@ urlpatterns = [
     # Pages
     path('pages/rtl/', views.rtl, name="rtl"),
     path('pages/pricing/', views.pricing, name="pricing"),
-    path('landing/', views.landing, name="landing"),
+    path('landing/', views.landing, name="landing_old"),
     path('pages/widgets/', views.widgets, name="widgets"),
     path('pages/charts/', views.charts, name="page_charts"),
     path('pages/sweet-alerts/', views.sweet_alerts, name="sweet_alerts"),

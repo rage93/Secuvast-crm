@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card">
+        <div class="card-header"><h5 class="mb-0">Company Information</h5></div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item"><strong>Name:</strong> {{ company.name }}</li>
+            <li class="list-group-item"><strong>Plan:</strong> {{ company.plan }}</li>
+            <li class="list-group-item"><strong>Created By:</strong> {{ company.created_by.username }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
