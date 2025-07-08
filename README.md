@@ -30,11 +30,22 @@
     - `Backup & restore DB`
     - `Interact with Django Core`
     - `Manage Environment`
-    - `Manage Dependencies`  
+    - `Manage Dependencies`
 - [Deployment](https://app-generator.dev/docs/deployment.html)
-  - Docker/Docker Compose Scripts 
+  - Docker/Docker Compose Scripts
   - CI/CD for [Render](https://app-generator.dev/docs/deployment/render/index.html)
-- [Vite](https://app-generator.dev/docs/technologies/vite/index.html) for assets management 
+- [Vite](https://app-generator.dev/docs/technologies/vite/index.html) for assets management
+
+## Company Sign-Up
+
+Only the first administrator should create an account using the company sign-up page:
+
+```
+/company/signup/
+```
+
+This flow creates both the user and the company. Additional members are invited from the
+administration area once signed in.
 
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)
 

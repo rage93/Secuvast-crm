@@ -246,23 +246,11 @@
                               </a>
                             </div>
                           </li>
-                          <li class="nav-item dropdown dropdown-hover dropdown-subitem list-group-item border-0 p-0">
-                            <a class="dropdown-item border-radius-md ps-3 d-flex align-items-center mb-1 text-dark" id="dropdownSignUp">
+                          <li class="nav-item list-group-item border-0 p-0">
+                            <a class="dropdown-item border-radius-md ps-3 d-flex align-items-center mb-1 text-dark" href="{% url 'signup_company' %}">
                               <i class="material-symbols-rounded opacity-6 me-2 text-md">assignment</i>
-                              <span>Sign Up</span>
-                              <img src="{% static "assets/img/down-arrow.svg" %}" alt="down-arrow" class="arrow ms-auto">
+                              <span>Create Company</span>
                             </a>
-                            <div class="dropdown-menu mt-0 py-3 px-2" aria-labelledby="dropdownSignUp">
-                              <a class="dropdown-item ps-3 border-radius-md mb-1" href="{% url "basic_register" %}">
-                                <span>Basic</span>
-                              </a>
-                              <a class="dropdown-item ps-3 border-radius-md mb-1" href="{% url "cover_register" %}">
-                                <span>Cover</span>
-                              </a>
-                              <a class="dropdown-item ps-3 border-radius-md" href="{% url "illustration_register" %}">
-                                <span>Illustration</span>
-                              </a>
-                            </div>
                           </li>
                           <li class="nav-item dropdown dropdown-hover dropdown-subitem list-group-item border-0 p-0">
                             <a class="dropdown-item border-radius-md ps-3 d-flex align-items-center mb-1 text-dark" id="dropdownPasswordReset">
@@ -353,17 +341,9 @@
                         </a>
                         <h6 class="dropdown-header text-dark font-weight-bolder d-flex align-items-center mt-3 px-0">
                           <i class="material-symbols-rounded opacity-6 me-2 text-md">assignment</i>
-                          Sign Up
+                          Create Company
                         </h6>
-                        <a href="{% url "basic_register" %}" class="dropdown-item border-radius-md ps-4">
-                          Basic
-                        </a>
-                        <a href="{% url "cover_register" %}" class="dropdown-item border-radius-md ps-4">
-                          Cover
-                        </a>
-                        <a href="{% url "illustration_register" %}" class="dropdown-item border-radius-md ps-4">
-                          Illustration
-                        </a>
+                        <a href="{% url 'signup_company' %}" class="dropdown-item border-radius-md ps-4">Create Company</a>
                         <h6 class="dropdown-header text-dark font-weight-bolder d-flex align-items-center mt-3 px-0">
                           <i class="material-symbols-rounded opacity-6 me-2 text-md">restart_alt</i>
                           Reset Password

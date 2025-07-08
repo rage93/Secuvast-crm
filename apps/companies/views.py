@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 
 from .models import Company, Subscription, StripeEvent
 from .forms import CompanySignupForm
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from apps.users.models import Profile
 
 import stripe
 from django.conf import settings
@@ -123,3 +126,25 @@ def signup_success(request):
     login(request, user)
     host = f"{company.slug_subdomain}.{request.get_host()}"
     return HttpResponseRedirect(f"//{host}/")
+
+
+@login_required
+def company_info(request):
+    if not (request.company and request.user.profile.role == "admin"):
+        return HttpResponseForbidden()
+    return render(
+        request,
+        "companies/company_info.html",
+        {"company": request.company, "parent": "company", "segment": "info"},
+    )
+
+@login_required
+def company_users(request):
+    if not (request.company and request.user.profile.role == "admin"):
+        return HttpResponseForbidden()
+    users = Profile.objects.filter(company=request.company).select_related("user")
+    return render(
+        request,
+        "companies/company_users.html",
+        {"users": users, "parent": "company", "segment": "users"},
+    )
