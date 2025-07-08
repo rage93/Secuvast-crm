@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'django_api_gen',
-    'django_ratelimit',
+    'ratelimit',
 ]
 
 SITE_ID = 1
@@ -364,4 +364,6 @@ DYNAMIC_API = {
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
+STRIPE_PRO_PRICE_ID = os.getenv('STRIPE_PRO_PRICE_ID', '')
+SAAS_ROOT_DOMAIN = os.getenv('SAAS_ROOT_DOMAIN', 'localhost')
 ########################################

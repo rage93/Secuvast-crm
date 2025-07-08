@@ -94,8 +94,8 @@ def create_user(request):
     else:
         form = TenantUserCreationForm(company=request.company)
 
-    context = {"form": form, "segment": "create_user", "parent": "apps"}
-    return render(request, "users/create_user.html", context)
+    context = {"form": form, "segment": "new_user", "parent": "team"}
+    return render(request, "pages/team/new-user.html", context)
 
 
 @login_required

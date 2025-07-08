@@ -1,9 +1,14 @@
 import json
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 
 from .models import Company, Subscription, StripeEvent
+from .forms import CompanySignupForm
 
 import stripe
 from django.conf import settings
@@ -51,3 +56,70 @@ def stripe_webhook(request):
                 company.grace_until = timezone.now() + timezone.timedelta(days=5)
                 company.save(update_fields=['grace_until'])
     return HttpResponse('')
+
+
+def signup_company(request):
+    """Collect company and owner info then start Stripe checkout if needed."""
+    if request.method == "POST":
+        form = CompanySignupForm(request.POST)
+        if form.is_valid():
+            company = Company.objects.create(
+                name=form.cleaned_data["company_name"],
+                slug_subdomain=form.cleaned_data["subdomain"],
+                plan=form.cleaned_data["plan"],
+            )
+            user = User.objects.create_user(
+                username=form.cleaned_data["username"],
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password1"],
+            )
+            profile = user.profile
+            profile.company = company
+            profile.role = "admin"
+            profile.save()
+            company.created_by = user
+            company.save(update_fields=["created_by"])
+
+            if company.plan == "pro":
+                session = stripe.checkout.Session.create(
+                    mode="subscription",
+                    success_url=request.build_absolute_uri(
+                        reverse("signup_success")
+                    )
+                    + "?session_id={CHECKOUT_SESSION_ID}",
+                    cancel_url=request.build_absolute_uri(reverse("basic_login")),
+                    line_items=[{"price": settings.STRIPE_PRO_PRICE_ID, "quantity": 1}],
+                    customer_email=user.email,
+                    metadata={"company_id": company.id},
+                )
+                return redirect(session.url)
+            else:
+                login(request, user)
+                host = f"{company.slug_subdomain}.{request.get_host()}"
+                return HttpResponseRedirect(f"//{host}/")
+    else:
+        form = CompanySignupForm()
+
+    return render(request, "companies/company_signup.html", {"form": form})
+
+
+def signup_success(request):
+    """Handle Stripe checkout success and log the user in."""
+    session_id = request.GET.get("session_id")
+    if not session_id:
+        return redirect("basic_login")
+    session = stripe.checkout.Session.retrieve(session_id)
+    company_id = session.metadata.get("company_id")
+    company = get_object_or_404(Company, id=company_id)
+    company.stripe_customer_id = session.customer
+    company.save(update_fields=["stripe_customer_id"])
+    if session.subscription:
+        Subscription.objects.get_or_create(
+            company=company,
+            stripe_subscription_id=session.subscription,
+            defaults={"status": "active"},
+        )
+    user = company.created_by
+    login(request, user)
+    host = f"{company.slug_subdomain}.{request.get_host()}"
+    return HttpResponseRedirect(f"//{host}/")
