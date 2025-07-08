@@ -1,0 +1,12 @@
+Admin:
+  - auth.add_user
+  - auth.change_user
+  - auth.delete_user
+  - auth.view_user
+Manager:
+  - auth.add_user
+  - auth.change_user
+  - auth.view_user
+Staff:
+  - auth.view_user
+Read-Only: []

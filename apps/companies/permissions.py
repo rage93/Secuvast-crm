@@ -8,7 +8,7 @@ class TenantActivePermission(BasePermission):
         company = getattr(request, "company", None)
         if not company:
             return False
-        if company.is_active or company.ignore_subscription:
+        if company.life_cycle == company.LifeCycle.ACTIVE or company.ignore_subscription:
             return True
         if company.grace_until and company.grace_until > timezone.now():
             return True
