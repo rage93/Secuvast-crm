@@ -17,6 +17,8 @@ from str2bool import str2bool
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from celery.schedules import crontab
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 load_dotenv()
 
@@ -31,6 +33,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
     SECRET_KEY = ''.join(random.choice( string.ascii_lowercase  ) for i in range( 32 ))
+
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
 
 # Enable/Disable DEBUG Mode
 DEBUG = str2bool(os.environ.get('DEBUG'))
@@ -95,12 +101,15 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'apps.companies.middleware.SubdomainCompanyMiddleware',
+    'apps.companies.rls_middleware.PostgresRLSMiddleware',
     'apps.companies.audit_middleware.AuditLogMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.companies.redirect_middleware.EnsureSubdomainMiddleware',
     'apps.companies.user_middleware.CurrentUserMiddleware',
+    'apps.companies.blame_middleware.BlameMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -162,6 +171,8 @@ else:
             'NAME': 'db.sqlite3',
         }
     }
+
+DATABASE_ROUTERS = ['apps.companies.db_router.CompanyRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -307,6 +318,10 @@ CELERY_BEAT_SCHEDULE = {
     'grace-warning': {
         'task': 'apps.companies.tasks.grace_warning',
         'schedule': crontab(hour=12, minute=0),
+    },
+    'retry-webhooks': {
+        'task': 'apps.companies.tasks.retry_failed_webhooks',
+        'schedule': crontab(minute='*/5'),
     },
 }
 ########################################

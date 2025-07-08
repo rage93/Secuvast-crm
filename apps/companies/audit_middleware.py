@@ -2,7 +2,10 @@ import json
 from django.utils import timezone
 from django_redis import get_redis_connection
 
-conn = get_redis_connection("default")
+try:
+    conn = get_redis_connection("default")
+except Exception:  # pragma: no cover - fallback for tests
+    conn = None
 
 class AuditLogMiddleware:
     def __init__(self, get_response):
@@ -23,7 +26,11 @@ class AuditLogMiddleware:
             'status': response.status_code,
             'ms': duration,
         }
-        length = conn.rpush("audit_log_buffer", json.dumps(data))
-        if length == 1:
-            conn.set("audit_log_buffer_first_ts", int(timezone.now().timestamp()))
+        if conn:
+            length = conn.rpush("audit_log_buffer", json.dumps(data))
+            if length == 1:
+                conn.set(
+                    "audit_log_buffer_first_ts",
+                    int(timezone.now().timestamp()),
+                )
         return response

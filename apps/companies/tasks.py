@@ -9,7 +9,13 @@ from django.template.loader import render_to_string
 from django_redis import get_redis_connection
 from datetime import timedelta
 
-from .models import Subscription, AuditLog, Company, StripeEvent
+from .models import (
+    Subscription,
+    AuditLog,
+    Company,
+    StripeEvent,
+    StripeWebhookLog,
+)
 
 @shared_task
 def verify_subscriptions():
@@ -40,14 +46,14 @@ def verify_subscriptions():
             if status not in ["active", "trialing"]:
                 if company.grace_until and company.grace_until > timezone.now():
                     continue
-                if company.is_active:
-                    company.is_active = False
-                    company.save(update_fields=["is_active"])
+                if company.life_cycle == Company.LifeCycle.ACTIVE:
+                    company.life_cycle = Company.LifeCycle.SUSPENDED
+                    company.save(update_fields=["life_cycle"])
             else:
                 update_fields = []
-                if not company.is_active:
-                    company.is_active = True
-                    update_fields.append("is_active")
+                if company.life_cycle != Company.LifeCycle.ACTIVE:
+                    company.life_cycle = Company.LifeCycle.ACTIVE
+                    update_fields.append("life_cycle")
                 if company.grace_until:
                     company.grace_until = None
                     update_fields.append("grace_until")
@@ -143,3 +149,23 @@ def purge_stripe_events():
     """Delete StripeEvent records older than one year."""
     cutoff = timezone.now() - timedelta(days=365)
     StripeEvent.objects.filter(created_at__lt=cutoff).delete()
+
+
+def _handle_webhook(log):
+    from .views import handle_stripe_event
+
+    try:
+        handle_stripe_event(log.payload)
+        log.status = log.Status.PROCESSED
+        log.error = ""
+    except Exception as exc:  # pragma: no cover - safeguard
+        log.status = log.Status.FAILED
+        log.error = str(exc)
+    log.save(update_fields=["status", "error"])
+
+
+@shared_task
+def retry_failed_webhooks():
+    """Reprocess any failed Stripe webhooks."""
+    for log in StripeWebhookLog.objects.filter(status=StripeWebhookLog.Status.FAILED)[:10]:
+        _handle_webhook(log)
