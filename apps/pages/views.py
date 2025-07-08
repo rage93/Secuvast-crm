@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
-from django_ratelimit.decorators import ratelimit
+from ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
 from apps.pages.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout
@@ -108,6 +108,7 @@ def new_user(request):
 
 
 # Pages -> Accounts
+@login_required
 def settings(request):
   context = {
     'parent': 'accounts',

@@ -7,7 +7,7 @@ from django.http import Http404
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django_ratelimit.decorators import ratelimit
+from ratelimit.decorators import ratelimit
 from django.shortcuts import render, redirect, get_object_or_404
 
 from rest_framework.generics import get_object_or_404

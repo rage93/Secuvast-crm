@@ -388,9 +388,15 @@
                 </a>
               </li>
               <li class="nav-item {% if segment == 'new_user' %}active{% endif %}">
-                <a class="nav-link text-dark {% if segment == 'new_user' %}active{% endif %}" href="{% url "new_user" %}">
+                <a class="nav-link text-dark {% if segment == 'new_user' %}active{% endif %}" href="{% url 'tenant_create_user' %}">
                   <span class="sidenav-mini-icon"> N </span>
                   <span class="sidenav-normal  ms-1  ps-1"> New User </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'invite_user' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'invite_user' %}active{% endif %}" href="{% url 'invite_user' %}">
+                  <span class="sidenav-mini-icon"> I </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Invite User </span>
                 </a>
               </li>
               <li class="nav-item {% if segment == 'profile_overview' %}active{% endif %}">
