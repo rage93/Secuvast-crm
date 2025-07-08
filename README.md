@@ -38,11 +38,13 @@
 
 ## Company Sign-Up
 
+
 Only the first administrator should create an account using the company sign‑up page:
 
 ```
 /company/signup/
 ```
+
 
 During sign up the user account and the company are created in one step. After
 registration you are redirected to the pricing page to select a plan and
@@ -116,6 +118,7 @@ Generate demo data locally with:
 ```bash
 python scripts/make_demo_data.py
 ```
+
 
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)
 
