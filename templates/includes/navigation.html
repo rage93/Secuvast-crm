@@ -23,6 +23,11 @@
             <label class="form-label">Search here</label>
             <input type="text" class="form-control">
           </div>
+          {% if plan_usage %}
+          <div class="ms-3 small text-muted">
+            Plan usage: {{ plan_usage.used }} / {{ plan_usage.limit }}
+          </div>
+          {% endif %}
         </div>
         <ul class="navbar-nav  justify-content-end">
           {% if request.user.is_authenticated %}
@@ -37,7 +42,13 @@
               <i class="material-symbols-rounded">account_circle</i>
             </a>
           </li>
-          {% endif %}
+{% endif %}
+          <li class="nav-item d-none d-lg-block">
+            <a href="{% url 'landing' %}" class="nav-link px-2 py-0">Home</a>
+          </li>
+          <li class="nav-item d-none d-lg-block">
+            <a href="{% url 'pricing' %}" class="nav-link px-2 py-0">Pricing</a>
+          </li>
           <li class="nav-item">
             <a href="javascript:;" class="nav-link py-0 px-1 line-height-0">
               <i class="material-symbols-rounded fixed-plugin-button-nav">

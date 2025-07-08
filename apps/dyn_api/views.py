@@ -7,11 +7,14 @@ from django.http import Http404
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from django.shortcuts import render, redirect, get_object_or_404
 
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from apps.companies.permissions import TenantActivePermission
 from django.http import HttpResponse
 
 from django.conf import settings
@@ -35,7 +38,11 @@ def index(request):
 
     return render(request, 'dyn_api/index.html', context)
 
+@method_decorator(
+    ratelimit(key='ip', group=lambda r: getattr(r, 'company', None).id if getattr(r,'company', None) else 'anon', rate='10/m', block=True),
+    name='dispatch')
 class DynamicAPI(APIView):
+    permission_classes = [IsAuthenticated, TenantActivePermission]
 
     # READ : GET api/model/id or api/model
     def get(self, request, **kwargs):

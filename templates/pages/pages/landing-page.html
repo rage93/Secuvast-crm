@@ -1,0 +1,82 @@
+{% extends "layouts/base-full.html" %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'assets/css/landing.css' %}">
+{% endblock extrastyle %}
+
+{% block navigation %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'landing' %}">{% trans "Secuvast CRM" %}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'pricing' %}">{% trans "Pricing" %}</a></li>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">{% trans "Dashboard" %}</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'basic_login' %}">{% trans "Login" %}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'basic_register' %}">{% trans "Register" %}</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock navigation %}
+
+{% block content %}
+<section class="bg-gradient-dark text-white d-flex align-items-center min-vh-75">
+  <div class="container text-center">
+    <h1 class="display-4 mb-3 fade-scroll">{% trans "Manage your business effortlessly" %}</h1>
+    <p class="lead fade-scroll">{% trans "Secuvast CRM helps you track customers, inventory and finances in one place." %}</p>
+    <a class="btn btn-primary btn-lg mt-4" href="{% url 'basic_register' %}">{% trans "Get started" %}</a>
+  </div>
+</section>
+
+<section class="py-6">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 text-center fade-scroll">
+        <i class="material-symbols-rounded text-primary text-4xl mb-2">dashboard</i>
+        <h5>{% trans "All-in-one Dashboard" %}</h5>
+        <p class="text-muted">{% trans "Control CRM, ERP and inventory from a single panel." %}</p>
+      </div>
+      <div class="col-md-4 text-center fade-scroll">
+        <i class="material-symbols-rounded text-primary text-4xl mb-2">lock</i>
+        <h5>{% trans "Secure by design" %}</h5>
+        <p class="text-muted">{% trans "Your data stays private within your company." %}</p>
+      </div>
+      <div class="col-md-4 text-center fade-scroll">
+        <i class="material-symbols-rounded text-primary text-4xl mb-2">support_agent</i>
+        <h5>{% trans "Dedicated support" %}</h5>
+        <p class="text-muted">{% trans "We are here to help you succeed." %}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-6 bg-gray-100">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center fade-scroll">
+        <h2 class="mb-4">{% trans "Who we are" %}</h2>
+        <p class="text-muted">{% trans "Secuvast is a passionate team building reliable software for growing businesses." %}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-6">
+  <div class="container text-center fade-scroll">
+    <h2 class="mb-4">{% trans "Ready to streamline your workflow?" %}</h2>
+    <a class="btn btn-primary btn-lg" href="{% url 'pricing' %}">{% trans "View Plans" %}</a>
+  </div>
+</section>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'assets/js/landing.js' %}"></script>
+{% endblock extra_js %}

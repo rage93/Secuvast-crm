@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from apps.pages import views
+import apps.companies.views
 from django.views.static import serve
 
 handler404 = 'apps.pages.views.error_404'
@@ -19,6 +20,7 @@ urlpatterns = [
     path('tasks/', include('apps.tasks.urls')),
     path('', include('apps.file_manager.urls')),
     path("users/", include("apps.users.urls")),
+    path('stripe/webhook/', apps.companies.views.stripe_webhook, name='stripe_webhook'),
     path('accounts/', include('allauth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
     

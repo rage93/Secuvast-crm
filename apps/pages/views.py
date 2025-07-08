@@ -1,11 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
 from apps.pages.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from apps.companies.decorators import company_active_required, active_user_required
 
 # Create your views here.
 
 # Dashboard
+@login_required
+@active_user_required
+@company_active_required
 def analytics(request):
   context = {
     'parent': 'dashboard',
@@ -13,6 +20,9 @@ def analytics(request):
   }
   return render(request, 'pages/dashboards/analytics.html', context)
 
+@login_required
+@active_user_required
+@company_active_required
 def discover(request):
   context = {
     'parent': 'dashboard',
@@ -20,6 +30,9 @@ def discover(request):
   }
   return render(request, 'pages/dashboards/discover.html', context)
 
+@login_required
+@active_user_required
+@company_active_required
 def sales(request):
   context = {
     'parent': 'dashboard',
@@ -27,6 +40,9 @@ def sales(request):
   }
   return render(request, 'pages/dashboards/sales.html', context)
 
+@login_required
+@active_user_required
+@company_active_required
 def automotive(request):
   context = {
     'parent': 'dashboard',
@@ -34,6 +50,9 @@ def automotive(request):
   }
   return render(request, 'pages/dashboards/automotive.html', context)
 
+@login_required
+@active_user_required
+@company_active_required
 def smart_home(request):
   context = {
     'parent': 'dashboard',
@@ -171,6 +190,14 @@ def pricing(request):
     'segment': 'pricing'
   }
   return render(request, 'pages/pages/pricing-page.html', context)
+
+def landing(request):
+  """Public landing page."""
+  context = {
+    'parent': 'pages',
+    'segment': 'landing'
+  }
+  return render(request, 'pages/pages/landing-page.html', context)
 
 def widgets(request):
   context = {
@@ -311,17 +338,16 @@ def referral(request):
 
 
 # Authentication -> Login
+@method_decorator(ratelimit(key='ip', rate='5/m', group=lambda r: getattr(r, 'company', None).id if getattr(r,'company', None) else 'anon', block=True), name='dispatch')
 class BasicLoginView(LoginView):
   template_name = 'accounts/signin/basic.html'
   form_class = LoginForm
 
-class CoverLoginView(LoginView):
+class CoverLoginView(BasicLoginView):
   template_name = 'accounts/signin/cover.html'
-  form_class = LoginForm
 
-class IllustrationLoginView(LoginView):
+class IllustrationLoginView(BasicLoginView):
   template_name = 'accounts/signin/illustration.html'
-  form_class = LoginForm
 
 # Authentication -> Register
 def basic_register(request):
