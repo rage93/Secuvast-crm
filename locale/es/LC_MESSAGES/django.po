@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 22:20+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps/pages/forms.py:9 apps/pages/forms.py:34
+msgid "Password"
+msgstr ""
+
+#: apps/pages/forms.py:13
+msgid "Password Confirmation"
+msgstr ""
+
+#: config/settings.py:189
+msgid "English (US)"
+msgstr ""
+
+#: config/settings.py:190
+msgid "Español"
+msgstr ""
+
+#: config/settings.py:191
+msgid "Deutsch"
+msgstr ""
+
+#: config/settings.py:192
+msgid "Italiano"
+msgstr ""
+
+#: templates/pages/apps/i18n.html:13
+msgid "test1"
+msgstr ""
+
+#: templates/pages/apps/i18n.html:20
+msgid "test2"
+msgstr ""
+
+#: templates/pages/apps/i18n.html:27
+msgid "test3"
+msgstr ""
+
+#: templates/pages/pages/landing-page.html:11
+msgid "Secuvast CRM"
+msgstr ""
+
+#: templates/pages/pages/landing-page.html:17
+msgid "Pricing"
+msgstr "Precios"
+
+#: templates/pages/pages/landing-page.html:19
+msgid "Dashboard"
+msgstr "Panel"
+
+#: templates/pages/pages/landing-page.html:21
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#: templates/pages/pages/landing-page.html:22
+msgid "Register"
+msgstr "Registrarse"
+
+#: templates/pages/pages/landing-page.html:33
+msgid "Manage your business effortlessly"
+msgstr "Administra tu negocio sin esfuerzo"
+
+#: templates/pages/pages/landing-page.html:34
+msgid ""
+"Secuvast CRM helps you track customers, inventory and finances in one place."
+msgstr "Secuvast CRM te ayuda a gestionar clientes, inventario y finanzas en un solo lugar."
+
+#: templates/pages/pages/landing-page.html:35
+msgid "Get started"
+msgstr "Comenzar"
+
+#: templates/pages/pages/landing-page.html:44
+msgid "All-in-one Dashboard"
+msgstr "Panel integral"
+
+#: templates/pages/pages/landing-page.html:45
+msgid "Control CRM, ERP and inventory from a single panel."
+msgstr "Controla CRM, ERP e inventario desde un solo panel."
+
+#: templates/pages/pages/landing-page.html:49
+msgid "Secure by design"
+msgstr "Seguridad desde el diseño"
+
+#: templates/pages/pages/landing-page.html:50
+msgid "Your data stays private within your company."
+msgstr "Tus datos permanecen privados dentro de tu empresa."
+
+#: templates/pages/pages/landing-page.html:54
+msgid "Dedicated support"
+msgstr "Soporte dedicado"
+
+#: templates/pages/pages/landing-page.html:55
+msgid "We are here to help you succeed."
+msgstr "Estamos aquí para ayudarte a triunfar."
+
+#: templates/pages/pages/landing-page.html:65
+msgid "Who we are"
+msgstr "Quiénes somos"
+
+#: templates/pages/pages/landing-page.html:66
+msgid ""
+"Secuvast is a passionate team building reliable software for growing "
+"businesses."
+msgstr "Secuvast es un equipo apasionado que crea software confiable para empresas en crecimiento."
+
+#: templates/pages/pages/landing-page.html:74
+msgid "Ready to streamline your workflow?"
+msgstr "¿Listo para simplificar tu trabajo?"
+
+#: templates/pages/pages/landing-page.html:75
+msgid "View Plans"
+msgstr "Ver planes"

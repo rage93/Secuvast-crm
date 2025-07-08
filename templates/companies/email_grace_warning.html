@@ -1,0 +1,9 @@
+{% autoescape off %}
+<p style="color: {{ company.primary_color }};">
+  Hi {{ company.created_by.username }},<br>
+  Your subscription for {{ company.name }} will be suspended in 24 hours.
+</p>
+{% if company.logo %}
+<img src="{{ company.logo.url }}" alt="logo" width="120">
+{% endif %}
+{% endautoescape %}

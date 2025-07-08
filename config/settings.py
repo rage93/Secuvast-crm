@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 from str2bool import str2bool
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -33,6 +34,8 @@ if not SECRET_KEY:
 
 # Enable/Disable DEBUG Mode
 DEBUG = str2bool(os.environ.get('DEBUG'))
+# environment identifier for locks and cache keys
+ENVIRONMENT = os.getenv('ENV', 'dev')
 #print(' DEBUG -> ' + str(DEBUG) ) 
 
 ALLOWED_HOSTS = ['*']
@@ -65,6 +68,7 @@ INSTALLED_APPS = [
     'apps.dyn_api',
     'apps.file_manager',
     'apps.tasks',
+    'apps.companies',
     'apps.users',
     'apps.react',
 
@@ -81,6 +85,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'django_api_gen',
+    'django_ratelimit',
 ]
 
 SITE_ID = 1
@@ -89,10 +94,13 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'apps.companies.middleware.SubdomainCompanyMiddleware',
+    'apps.companies.audit_middleware.AuditLogMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.companies.user_middleware.CurrentUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -117,6 +125,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.companies.context_processors.company_brand',
             ],
         },
     },
@@ -178,6 +187,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGES = [
     ('en', _('English (US)')),
+    ('es', _('Español')),
     ('de', _('Deutsch')),
     ('it', _('Italiano')),
 ]
@@ -211,6 +221,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.getenv('REDIS_URL', 'redis://redis:6379/1'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+    }
+}
+
+RATELIMIT_USE_CACHE = 'default'
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -264,17 +286,41 @@ CELERY_RESULT_EXPIRES     = 60*60*24*30 # Results expire after 1 month
 CELERY_ACCEPT_CONTENT     = ["json"]
 CELERY_TASK_SERIALIZER    = 'json'
 CELERY_RESULT_SERIALIZER  = 'json'
+
+CELERY_BEAT_SCHEDULE = {
+    'verify-subscriptions': {
+        'task': 'apps.companies.tasks.verify_subscriptions',
+        'schedule': crontab(hour='*/6', minute=0),
+    },
+    'purge-audit-logs': {
+        'task': 'apps.companies.tasks.purge_audit_logs',
+        'schedule': crontab(hour=0, minute=0),
+    },
+    'flush-audit-logs': {
+        'task': 'apps.companies.tasks.flush_audit_logs',
+        'schedule': crontab(minute='*/1'),
+    },
+    'purge-stripe-events': {
+        'task': 'apps.companies.tasks.purge_stripe_events',
+        'schedule': crontab(hour=0, minute=30),
+    },
+    'grace-warning': {
+        'task': 'apps.companies.tasks.grace_warning',
+        'schedule': crontab(hour=12, minute=0),
+    },
+}
 ########################################
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+        'apps.companies.permissions.TenantActivePermission',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
@@ -300,6 +346,8 @@ if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@example.com')
+
 
 # ### DYNAMIC_DATATB Settings ###
 DYNAMIC_DATATB = {
@@ -310,14 +358,10 @@ DYNAMIC_DATATB = {
 
 # Syntax: URI -> Import_PATH
 DYNAMIC_API = {
-    # SLUG -> Import_PATH 
+    # SLUG -> Import_PATH
     'product'  : "apps.pages.models.Product",
 }
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-}
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
 ########################################
