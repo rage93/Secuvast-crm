@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
-from ratelimit.decorators import ratelimit
+from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
 from apps.pages.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout

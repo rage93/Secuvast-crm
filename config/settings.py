@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'django_api_gen',
-    'ratelimit',
+    'django_ratelimit',
 ]
 
 SITE_ID = 1
