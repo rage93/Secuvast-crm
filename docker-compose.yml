@@ -5,6 +5,10 @@ services:
     restart: always
     build:
       context: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python manage.py runserver 0.0.0.0:5005
     networks:
       - db_network
       - web_network
@@ -34,11 +38,14 @@ services:
     restart: always
     build:
       context: .
+    volumes:
+      - .:/app
+    working_dir: /app
     networks:
       - db_network
     environment:
       DJANGO_SETTINGS_MODULE: "config.settings"
-    command: "celery -A apps.tasks worker -l info -B"
+    command: watchmedo auto-restart --patterns="*.py" -- celery -A apps.tasks worker -l info -B
     depends_on:
       - appseed-app
 

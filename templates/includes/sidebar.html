@@ -142,6 +142,42 @@
         <li class="nav-item mt-3">
           <h6 class="ps-3  ms-2 text-uppercase text-xs font-weight-bolder text-dark">PAGES</h6>
         </li>
+        {% if request.user.is_authenticated and request.user.profile.role == 'admin' or request.user.is_superuser or perms.companies.bypass_tenant_scope %}
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#companyMenu" class="nav-link text-dark {% if parent == 'company' %}active{% endif %}" aria-controls="companyMenu" role="button" aria-expanded="false">
+            <i class="material-symbols-rounded opacity-5">business</i>
+            <span class="nav-link-text ms-1 ps-1">Company</span>
+          </a>
+          <div class="collapse {% if parent == 'company' %}show{% endif %}" id="companyMenu">
+            <ul class="nav ">
+              <li class="nav-item {% if segment == 'info' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'info' %}active{% endif %}" href="{% url 'company_info' %}">
+                  <span class="sidenav-mini-icon"> I </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Info </span>
+                </a>
+              </li>
+              <li class="nav-item {% if segment == 'users' %}active{% endif %}">
+                <a class="nav-link text-dark {% if segment == 'users' %}active{% endif %}" href="{% url 'company_users' %}">
+                  <span class="sidenav-mini-icon"> U </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Users </span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-dark" target="_blank" href="{% url 'billing_portal' %}">
+                  <span class="sidenav-mini-icon"> B </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Billing </span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-dark" target="_blank" href="//{{ request.company.slug_subdomain }}.{{ request.get_host }}/">
+                  <span class="sidenav-mini-icon"> V </span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Visit Site </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a data-bs-toggle="collapse" href="#pagesExamples" class="nav-link text-dark {% if parent == 'pages' %}active{% endif %}" aria-controls="pagesExamples" role="button" aria-expanded="false">
             <i class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">contract</i>
@@ -478,32 +514,10 @@
                 </div>
               </li>
               <li class="nav-item ">
-                <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#signupExample">
+                <a class="nav-link text-dark " href="{% url 'signup_company' %}">
                   <span class="sidenav-mini-icon"> S </span>
-                  <span class="sidenav-normal  ms-1  ps-1"> Sign Up <b class="caret"></b></span>
+                  <span class="sidenav-normal  ms-1  ps-1"> Create Company </span>
                 </a>
-                <div class="collapse " id="signupExample">
-                  <ul class="nav nav-sm flex-column">
-                    <li class="nav-item">
-                      <a class="nav-link text-dark " href="{% url "basic_register" %}">
-                        <span class="sidenav-mini-icon"> B </span>
-                        <span class="sidenav-normal  ms-1  ps-1"> Basic </span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link text-dark " href="{% url "cover_register" %}">
-                        <span class="sidenav-mini-icon"> C </span>
-                        <span class="sidenav-normal  ms-1  ps-1"> Cover </span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link text-dark " href="{% url "illustration_register" %}">
-                        <span class="sidenav-mini-icon"> I </span>
-                        <span class="sidenav-normal  ms-1  ps-1"> Illustration </span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
               </li>
               {% if request.user.is_authenticated %}
               <li class="nav-item ">

@@ -71,10 +71,21 @@
                       <i class="material-symbols-rounded my-auto">remove</i>
                       <span class="ps-3">Complete documentation </span>
                     </div>
-                    <a href="javascript:;" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
+                    <form method="post" action="{% url 'choose_plan' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="free">
+                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                        Select
+                        <i class="fas fa-arrow-right ms-1"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'signup_company' %}?plan=free" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
                       Join
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -111,10 +122,21 @@
                       <i class="material-symbols-rounded my-auto text-white">remove</i>
                       <span class="ps-3 text-white">Complete documentation </span>
                     </div>
-                    <a href="javascript:;" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
+                    <form method="post" action="{% url 'choose_plan' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="pro">
+                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                        Select
+                        <i class="fas fa-arrow-right ms-1"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
                       Try Premium
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -151,10 +173,21 @@
                       <i class="material-symbols-rounded my-auto">done</i>
                       <span class="ps-3">Complete documentation </span>
                     </div>
-                    <a href="javascript:;" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
+                    <form method="post" action="{% url 'choose_plan' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="pro">
+                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                        Select
+                        <i class="fas fa-arrow-right ms-1"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
                       Join
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -195,10 +228,21 @@
                       <i class="material-symbols-rounded my-auto">remove</i>
                       <span class="ps-3">Complete documentation </span>
                     </div>
-                    <a href="javascript:;" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
+                    <form method="post" action="{% url 'choose_plan' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="pro">
+                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                        Select
+                        <i class="fas fa-arrow-right ms-1"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
                       Join
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -235,10 +279,21 @@
                       <i class="material-symbols-rounded my-auto text-white">remove</i>
                       <span class="ps-3 text-white">Complete documentation </span>
                     </div>
-                    <a href="javascript:;" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
+                    <form method="post" action="{% url 'choose_plan' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="pro">
+                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                        Select
+                        <i class="fas fa-arrow-right ms-1"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
                       Try Premium
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -275,10 +330,21 @@
                       <i class="material-symbols-rounded my-auto">done</i>
                       <span class="ps-3">Complete documentation </span>
                     </div>
-                    <a href="javascript:;" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
+                    <form method="post" action="{% url 'choose_plan' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="pro">
+                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                        Select
+                        <i class="fas fa-arrow-right ms-1"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
                       Join
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </div>

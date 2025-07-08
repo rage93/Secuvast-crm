@@ -11,7 +11,7 @@ def company_active_required(view_func):
     def _wrapped(request, *args, **kwargs):
         company = getattr(request, "company", None)
         if company and (
-            company.is_active
+            company.life_cycle == company.LifeCycle.ACTIVE
             or company.ignore_subscription
             or (company.grace_until and company.grace_until > timezone.now())
         ):
