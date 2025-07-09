@@ -1,0 +1,36 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-2">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h4 class="mt-5 font-weight-bolder h4">{% block title %}{% endblock %}</h4>
+      <h5 class="font-weight-normal text-md opacity-6">{% block subtitle %}{% endblock %}</h5>
+      <div class="multisteps-form mb-5">
+        <div class="row">
+          <div class="col-12 col-lg-8 mx-auto my-5">
+            <div class="card">
+              <div class="card-body">
+                <form method="post">
+                  {% csrf_token %}
+                  {% block form_fields %}{% endblock %}
+                  <div class="d-flex mt-4">
+                    <button class="btn bg-gradient-dark ms-auto mb-0" type="submit">
+                      {% block submit_label %}Submit{% endblock %}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'assets/js/plugins/multistep-form.js' %}"></script>
+{% endblock %}

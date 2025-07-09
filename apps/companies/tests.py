@@ -19,7 +19,7 @@ class StripeWebhookTests(TestCase):
             name="TestCo",
             slug_subdomain="testco",
             plan="pro",
-            is_active=True,
+            life_cycle=Company.LifeCycle.ACTIVE,
         )
         user = User.objects.create_user(username="admin", password="pass")
         user.profile.company = self.company
@@ -47,14 +47,14 @@ class StripeWebhookTests(TestCase):
         )
         self.company.refresh_from_db()
         self.assertTrue(self.company.grace_until is not None)
-        self.assertTrue(self.company.is_active)
+        self.assertTrue(self.company.life_cycle == Company.LifeCycle.ACTIVE)
         resp = self.client.get(reverse("smart_home"), HTTP_HOST="testco.example.com")
         self.assertEqual(resp.status_code, 200)
         self.company.grace_until = timezone.now() - timedelta(days=1)
-        self.company.is_active = False
+        self.company.life_cycle = Company.LifeCycle.SUSPENDED
         self.company.save()
         resp = self.client.get(reverse("smart_home"), HTTP_HOST="testco.example.com")
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 302)
 
     @override_settings(STRIPE_WEBHOOK_SECRET="whsec")
     @patch("apps.companies.audit_middleware.conn")
