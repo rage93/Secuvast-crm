@@ -173,7 +173,7 @@
               </li>
               <li class="nav-item">
 
-                <a class="nav-link text-dark" target="_blank" href="//{{ request.company.slug_subdomain }}.{{ request.get_host }}/">
+                <a class="nav-link text-dark" target="_blank" href="//{{ request.company.slug_subdomain }}.{{ root_domain }}{% if request.get_port != '80' and request.get_port != '443' %}:{{ request.get_port }}{% endif %}/">
                   <span class="sidenav-mini-icon"> V </span>
                   <span class="sidenav-normal  ms-1  ps-1"> Visit Site </span>
                 </a>

@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import login
+from django.conf import settings
 
 from .models import Company, Subscription, AuditLog, StripeEvent
 
@@ -68,7 +69,11 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
     def impersonate(self, request, queryset):
         company = queryset.first()
         if company:
-            url = f"//{company.slug_subdomain}.{request.get_host()}{reverse('admin:index')}"
+            port = request.get_port()
+            host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
+            if port not in ("80", "443"):
+                host += f":{port}"
+            url = f"//{host}{reverse('admin:index')}"
             return HttpResponseRedirect(url)
     impersonate.short_description = "Entrar como compañía"
 
@@ -78,7 +83,10 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
             self.message_user(request, "No admin user", level=messages.ERROR)
             return
         login(request, company.created_by, backend="django.contrib.auth.backends.ModelBackend")
-        host = f"{company.slug_subdomain}.{request.get_host()}"
+        port = request.get_port()
+        host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
+        if port not in ("80", "443"):
+            host += f":{port}"
         return HttpResponseRedirect(f"//{host}/")
     login_as.short_description = "Login as admin"
 

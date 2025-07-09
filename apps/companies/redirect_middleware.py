@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect
+from django.conf import settings
 
 class EnsureSubdomainMiddleware:
     """Redirect authenticated users to their company subdomain."""
@@ -20,18 +21,11 @@ class EnsureSubdomainMiddleware:
         ):
 
             host = request.get_host()
-            host_parts = host.split(":", 1)
-            base_host = host_parts[0]
-            port = ":" + host_parts[1] if len(host_parts) == 2 else ""
+            port = ""
+            if ":" in host:
+                port = ":" + host.split(":", 1)[1]
 
-            parts = base_host.split(".")
-            if parts[0] == "www" and len(parts) > 1:
-                base_domain = ".".join(parts[1:])
-            elif len(parts) <= 2:
-                base_domain = base_host
-            else:
-                base_domain = ".".join(parts[1:])
-
+            base_domain = settings.SAAS_ROOT_DOMAIN
             new_host = f"{company.slug_subdomain}.{base_domain}{port}"
             return HttpResponseRedirect(f"//{new_host}{request.get_full_path()}")
         return self.get_response(request)
