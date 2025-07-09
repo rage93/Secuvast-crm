@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.conf import settings
 from .models import Company
 from .plans import PLAN_LIMITS
 
@@ -19,3 +20,7 @@ def company_brand(request):
         },
         "plan_usage": {"used": used, "limit": limit},
     }
+
+
+def root_domain(request):
+    return {"root_domain": settings.SAAS_ROOT_DOMAIN}

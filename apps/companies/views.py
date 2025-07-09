@@ -7,6 +7,13 @@ from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 
+def _tenant_host(request, company):
+    port = request.get_port()
+    host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
+    if port not in ("80", "443"):
+        host += f":{port}"
+    return host
+
 from .models import Company, Subscription, StripeEvent, StripeWebhookLog
 from .forms import CompanySignupForm
 from django.contrib.auth.decorators import login_required
@@ -120,7 +127,7 @@ def signup_success(request):
     user = company.created_by
     login(request, user)
     request.session.pop("onboard_company_id", None)
-    host = f"{company.slug_subdomain}.{request.get_host()}"
+    host = _tenant_host(request, company)
 
     return HttpResponseRedirect(f"//{host}/dashboard/")
 
@@ -148,7 +155,7 @@ def choose_plan(request):
             )
             return redirect(session.url)
         request.session.pop("onboard_company_id", None)
-        host = f"{company.slug_subdomain}.{request.get_host()}"
+        host = _tenant_host(request, company)
         return HttpResponseRedirect(f"//{host}/dashboard/")
     return render(
         request,
