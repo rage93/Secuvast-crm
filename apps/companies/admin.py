@@ -51,7 +51,6 @@ class InGracePeriodFilter(admin.SimpleListFilter):
 class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
     list_display = (
         "name",
-        "slug_subdomain",
         "plan",
         "life_cycle",
         "onboarded_at",
@@ -59,7 +58,7 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
         "created_by",
         "created_at",
     )
-    search_fields = ("name", "legal_name", "slug_subdomain", "stripe_customer_id")
+    search_fields = ("name", "legal_name", "stripe_customer_id")
     list_filter = ("life_cycle", "plan", "industry", "timezone", InGracePeriodFilter)
 
     inlines = [AuditLogInline]
@@ -69,11 +68,7 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
     def impersonate(self, request, queryset):
         company = queryset.first()
         if company:
-            port = request.get_port()
-            host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
-            if port not in ("80", "443"):
-                host += f":{port}"
-            url = f"//{host}{reverse('admin:index')}"
+            url = reverse('admin:index') + f"?company={company.id}"
             return HttpResponseRedirect(url)
     impersonate.short_description = "Entrar como compañía"
 
@@ -83,11 +78,7 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
             self.message_user(request, "No admin user", level=messages.ERROR)
             return
         login(request, company.created_by, backend="django.contrib.auth.backends.ModelBackend")
-        port = request.get_port()
-        host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
-        if port not in ("80", "443"):
-            host += f":{port}"
-        return HttpResponseRedirect(f"//{host}/")
+        return HttpResponseRedirect("/")
     login_as.short_description = "Login as admin"
 
     def get_readonly_fields(self, request, obj=None):

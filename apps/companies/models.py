@@ -43,7 +43,6 @@ class Company(models.Model):
         DELETED = "DELETED", "Deleted"
 
     name = models.CharField(max_length=255)
-    slug_subdomain = models.SlugField()
     plan = models.CharField(max_length=50, default="free")
     trial_ends = models.DateField(null=True, blank=True)
     life_cycle = models.CharField(
@@ -94,11 +93,6 @@ class Company(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["slug_subdomain"],
-                condition=models.Q(deleted_at__isnull=True),
-                name="uniq_active_subdomain",
-            ),
             models.CheckConstraint(
                 check=
                 (
