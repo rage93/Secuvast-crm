@@ -121,6 +121,7 @@ def signup_success(request):
     login(request, user)
     request.session.pop("onboard_company_id", None)
     host = f"{company.slug_subdomain}.{request.get_host()}"
+
     return HttpResponseRedirect(f"//{host}/dashboard/")
 
 
@@ -160,6 +161,7 @@ def company_not_found(request):
     return render(request, "companies/company_not_found.html")
 
 
+
 @login_required
 def company_info(request):
     if not request.company:
@@ -172,6 +174,7 @@ def company_info(request):
             and request.user.profile.company == request.company
         )
     ):
+
         return HttpResponseForbidden()
     return render(
         request,
@@ -191,6 +194,7 @@ def company_users(request):
             and request.user.profile.company == request.company
         )
     ):
+
         return HttpResponseForbidden()
     users = Profile.objects.filter(company=request.company).select_related("user")
     return render(

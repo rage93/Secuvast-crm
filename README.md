@@ -38,16 +38,19 @@
 
 ## Company Sign-Up
 
+
 Only the first administrator should create an account using the company sign‑up page:
 
 ```
 /company/signup/
 ```
 
+
 During sign up the user account and the company are created in one step. After
 registration you are redirected to the pricing page to select a plan and
 complete payment via Stripe. Additional members are invited from the
 administration area once signed in.
+
 
 The full onboarding flow works as follows:
 
@@ -60,9 +63,11 @@ The full onboarding flow works as follows:
 You can also start from the public pricing page. Choosing a plan there will
 lead you to the sign‑up form with the plan preselected.
 
+
 When running locally, add entries to your `hosts` file so subdomains resolve to
 `127.0.0.1` (e.g. `myco.localhost`). After authentication, users are
 automatically redirected to their company subdomain.
+
 
 ## Auto Reload with Docker
 
@@ -74,9 +79,11 @@ using:
 docker compose up
 ```
 
+
 The `appseed-app` container runs `python manage.py migrate` on startup so new
 database tables are created automatically. If running the project outside of
 Docker, remember to apply migrations manually with `python manage.py migrate`.
+
 
 Whenever you modify the code, the web service reloads via Django's runserver
 and the Celery worker restarts thanks to `watchmedo`.
@@ -120,6 +127,7 @@ Generate demo data locally with:
 ```bash
 python scripts/make_demo_data.py
 ```
+
 
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)
 

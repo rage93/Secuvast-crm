@@ -10,5 +10,6 @@ urlpatterns = [
     path('billing/', views.billing_portal, name='billing_portal'),
     path('healthz/', views.healthz, name='company_healthz'),
     path('not-found/', views.company_not_found, name='company_not_found'),
+
 ]
 

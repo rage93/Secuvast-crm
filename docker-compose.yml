@@ -8,7 +8,9 @@ services:
     volumes:
       - .:/app
     working_dir: /app
+
     command: ./start.sh
+
     networks:
       - db_network
       - web_network

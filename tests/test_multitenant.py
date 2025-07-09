@@ -107,3 +107,9 @@ def test_sidebar_hidden_without_company(client):
     resp = client.get(reverse("landing"), HTTP_HOST="www.example.com")
     assert resp.status_code == 200
     assert b"/company/info/" not in resp.content
+
+@pytest.mark.django_db
+def test_not_found_no_redirect_loop(client):
+    resp = client.get(reverse("company_not_found"), HTTP_HOST="miss.example.com")
+    assert resp.status_code == 200
+

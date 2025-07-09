@@ -142,7 +142,9 @@
         <li class="nav-item mt-3">
           <h6 class="ps-3  ms-2 text-uppercase text-xs font-weight-bolder text-dark">PAGES</h6>
         </li>
+
         {% if request.user.is_authenticated and request.user.profile.role == 'admin' or request.user.is_superuser or perms.companies.bypass_tenant_scope %}
+
         <li class="nav-item">
           <a data-bs-toggle="collapse" href="#companyMenu" class="nav-link text-dark {% if parent == 'company' %}active{% endif %}" aria-controls="companyMenu" role="button" aria-expanded="false">
             <i class="material-symbols-rounded opacity-5">business</i>
@@ -163,12 +165,14 @@
                 </a>
               </li>
               <li class="nav-item">
+
                 <a class="nav-link text-dark" target="_blank" href="{% url 'billing_portal' %}">
                   <span class="sidenav-mini-icon"> B </span>
                   <span class="sidenav-normal  ms-1  ps-1"> Billing </span>
                 </a>
               </li>
               <li class="nav-item">
+
                 <a class="nav-link text-dark" target="_blank" href="//{{ request.company.slug_subdomain }}.{{ request.get_host }}/">
                   <span class="sidenav-mini-icon"> V </span>
                   <span class="sidenav-normal  ms-1  ps-1"> Visit Site </span>

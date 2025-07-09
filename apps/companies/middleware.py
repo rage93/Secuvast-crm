@@ -1,7 +1,9 @@
 from django.core.cache import cache
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+
 from django.db import OperationalError, ProgrammingError
+
 
 from .models import Company
 from .threadlocals import set_current_company
@@ -20,8 +22,10 @@ class SubdomainCompanyMiddleware:
         if cache.get(cache_key):
             request.company = None
             set_current_company(None)
+
             if subdomain not in ("www", ""):
                 return HttpResponseRedirect(reverse("company_not_found"))
+
             return self.get_response(request)
         try:
             if request.path == reverse("company_healthz"):
@@ -33,12 +37,19 @@ class SubdomainCompanyMiddleware:
                 )
         except Company.DoesNotExist:
             cache.set(cache_key, True, 300)
+
             request.company = None
             if subdomain not in ("www", ""):
                 set_current_company(None)
                 return HttpResponseRedirect(reverse("company_not_found"))
         except (OperationalError, ProgrammingError):
             # Database isn't ready yet (e.g. migrations pending)
+
             request.company = None
+            if subdomain not in ("www", ""):
+                set_current_company(None)
+                not_found_url = reverse("company_not_found")
+                if request.path != not_found_url:
+                    return HttpResponseRedirect(not_found_url)
         set_current_company(request.company)
         return self.get_response(request)
