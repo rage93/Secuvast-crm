@@ -64,9 +64,8 @@ You can also start from the public pricing page. Choosing a plan there will
 lead you to the sign‑up form with the plan preselected.
 
 
-When running locally, add entries to your `hosts` file so subdomains resolve to
-`127.0.0.1` (e.g. `myco.localhost`). After authentication, users are
-automatically redirected to their company subdomain.
+All companies share the same base URL. Access to data is restricted based on
+the company associated with each user.
 
 
 ## Auto Reload with Docker
