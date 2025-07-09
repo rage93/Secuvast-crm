@@ -52,7 +52,7 @@ INTERNAL_IPS = [
 ]
 
 # Add here your deployment HOSTS
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', "http://*.localhost", "http://*.localhost:5085" ]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://django-material-dash2-pro.onrender.com'] 
 
 # Application definition
 
@@ -100,15 +100,14 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'apps.companies.middleware.SubdomainCompanyMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.companies.user_middleware.CurrentUserMiddleware',
+    'apps.companies.middleware.UserCompanyMiddleware',
     'apps.companies.rls_middleware.PostgresRLSMiddleware',
     'apps.companies.audit_middleware.AuditLogMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'apps.companies.redirect_middleware.EnsureSubdomainMiddleware',
-    'apps.companies.user_middleware.CurrentUserMiddleware',
     'apps.companies.blame_middleware.BlameMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -135,6 +134,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'apps.companies.context_processors.company_brand',
+                'apps.companies.context_processors.root_domain',
             ],
         },
     },
@@ -381,11 +381,4 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
 STRIPE_PRO_PRICE_ID = os.getenv('STRIPE_PRO_PRICE_ID', '')
 SAAS_ROOT_DOMAIN = os.getenv('SAAS_ROOT_DOMAIN', 'localhost')
-########################################
-
-
-# Ensure session and CSRF cookies work across subdomains used for tenants
-SESSION_COOKIE_DOMAIN = f".{SAAS_ROOT_DOMAIN}"
-CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
-CSRF_TRUSTED_ORIGINS += [f'http://*.{SAAS_ROOT_DOMAIN}:5085']
 ########################################

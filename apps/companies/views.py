@@ -1,11 +1,12 @@
 import json
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+
 
 from .models import Company, Subscription, StripeEvent, StripeWebhookLog
 from .forms import CompanySignupForm
@@ -78,7 +79,6 @@ def signup_company(request):
         if form.is_valid():
             company = Company.objects.create(
                 name=form.cleaned_data["company_name"],
-                slug_subdomain=form.cleaned_data["subdomain"],
                 plan=plan,
             )
             user = User.objects.create_user(
@@ -120,9 +120,7 @@ def signup_success(request):
     user = company.created_by
     login(request, user)
     request.session.pop("onboard_company_id", None)
-    host = f"{company.slug_subdomain}.{request.get_host()}"
-
-    return HttpResponseRedirect(f"//{host}/dashboard/")
+    return redirect("/dashboard/")
 
 
 @login_required
@@ -148,8 +146,7 @@ def choose_plan(request):
             )
             return redirect(session.url)
         request.session.pop("onboard_company_id", None)
-        host = f"{company.slug_subdomain}.{request.get_host()}"
-        return HttpResponseRedirect(f"//{host}/dashboard/")
+        return redirect("/dashboard/")
     return render(
         request,
         "pages/pages/pricing-page.html",

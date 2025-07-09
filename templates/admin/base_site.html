@@ -6,10 +6,10 @@
   {% if request.user.is_superuser %}
   {% active_companies as companies %}
   <form style="display:inline-block;margin-left:1em;" method="get" action="">
-    <select onchange="if(this.value){location.href='//' + this.value + '.{{ request.get_host }}{% url 'admin:index' %}';}">
+    <select name="company" onchange="if(this.value){location.href='?company=' + this.value;}">
       <option value="">Switch company</option>
       {% for c in companies %}
-      <option value="{{ c.slug_subdomain }}">{{ c.name }}</option>
+      <option value="{{ c.id }}">{{ c.name }}</option>
       {% endfor %}
     </select>
   </form>

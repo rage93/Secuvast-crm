@@ -17,7 +17,6 @@ class StripeWebhookTests(TestCase):
     def setUp(self):
         self.company = Company.objects.create(
             name="TestCo",
-            slug_subdomain="testco",
             plan="pro",
             life_cycle=Company.LifeCycle.ACTIVE,
         )
@@ -54,7 +53,7 @@ class StripeWebhookTests(TestCase):
         self.company.life_cycle = Company.LifeCycle.SUSPENDED
         self.company.save()
         resp = self.client.get(reverse("smart_home"), HTTP_HOST="testco.example.com")
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 403)
 
     @override_settings(STRIPE_WEBHOOK_SECRET="whsec")
     @patch("apps.companies.audit_middleware.conn")
@@ -88,7 +87,7 @@ class StripeWebhookTests(TestCase):
 @override_settings(CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}})
 class PlanLimitTests(TestCase):
     def test_user_limit_free_plan(self):
-        company = Company.objects.create(name="FreeCo", slug_subdomain="freeco", plan="free")
+        company = Company.objects.create(name="FreeCo", plan="free")
         for i in range(3):
             user = User.objects.create_user(username=f"u{i}")
             user.profile.company = company
@@ -110,7 +109,7 @@ class PlanLimitTests(TestCase):
 @override_settings(CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}})
 class AuditTasksTests(TestCase):
     def test_prune_audit(self):
-        company = Company.objects.create(name="C", slug_subdomain="c")
+        company = Company.objects.create(name="C")
         user = User.objects.create_user(username="u")
         log = AuditLog.objects.create(
             company=company,
