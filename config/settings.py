@@ -52,7 +52,7 @@ INTERNAL_IPS = [
 ]
 
 # Add here your deployment HOSTS
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://django-material-dash2-pro.onrender.com'] 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', "http://*.localhost", "http://*.localhost:5085" ]
 
 # Application definition
 
@@ -381,4 +381,11 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
 STRIPE_PRO_PRICE_ID = os.getenv('STRIPE_PRO_PRICE_ID', '')
 SAAS_ROOT_DOMAIN = os.getenv('SAAS_ROOT_DOMAIN', 'localhost')
+########################################
+
+
+# Ensure session and CSRF cookies work across subdomains used for tenants
+SESSION_COOKIE_DOMAIN = f".{SAAS_ROOT_DOMAIN}"
+CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
+CSRF_TRUSTED_ORIGINS += [f'http://*.{SAAS_ROOT_DOMAIN}:5085']
 ########################################
