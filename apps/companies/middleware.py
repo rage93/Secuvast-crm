@@ -1,6 +1,7 @@
 from django.core.cache import cache
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.conf import settings
 
 from django.db import OperationalError, ProgrammingError
 
@@ -17,14 +18,23 @@ class SubdomainCompanyMiddleware:
 
     def __call__(self, request):
         host = request.get_host().split(':')[0]
-        subdomain = host.split('.')[0]
+        root_domain = settings.SAAS_ROOT_DOMAIN
+
+        if host == root_domain or host.replace('.', '').isdigit():
+            subdomain = ""
+        else:
+            subdomain = host.split('.')[0]
+            if subdomain == "www":
+                subdomain = ""
         cache_key = f"missing_slug_{subdomain}"
         if cache.get(cache_key):
             request.company = None
             set_current_company(None)
 
             if subdomain not in ("www", ""):
-                return HttpResponseRedirect(reverse("company_not_found"))
+                not_found_url = reverse("company_not_found")
+                if request.path != not_found_url:
+                    return HttpResponseRedirect(not_found_url)
 
             return self.get_response(request)
         try:
@@ -41,7 +51,9 @@ class SubdomainCompanyMiddleware:
             request.company = None
             if subdomain not in ("www", ""):
                 set_current_company(None)
-                return HttpResponseRedirect(reverse("company_not_found"))
+                not_found_url = reverse("company_not_found")
+                if request.path != not_found_url:
+                    return HttpResponseRedirect(not_found_url)
         except (OperationalError, ProgrammingError):
             # Database isn't ready yet (e.g. migrations pending)
 
