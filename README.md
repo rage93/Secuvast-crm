@@ -51,6 +51,7 @@ registration you are redirected to the pricing page to select a plan and
 complete payment via Stripe. Additional members are invited from the
 administration area once signed in.
 
+
 The full onboarding flow works as follows:
 
 1. Visit the landing page and choose **Create Company**.
@@ -62,9 +63,11 @@ The full onboarding flow works as follows:
 You can also start from the public pricing page. Choosing a plan there will
 lead you to the sign‑up form with the plan preselected.
 
+
 When running locally, add entries to your `hosts` file so subdomains resolve to
 `127.0.0.1` (e.g. `myco.localhost`). After authentication, users are
 automatically redirected to their company subdomain.
+
 
 ## Auto Reload with Docker
 
@@ -118,6 +121,7 @@ Generate demo data locally with:
 ```bash
 python scripts/make_demo_data.py
 ```
+
 
 
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)
