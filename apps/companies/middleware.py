@@ -19,8 +19,9 @@ class SubdomainCompanyMiddleware:
         if cache.get(cache_key):
             request.company = None
             set_current_company(None)
-            if subdomain not in ("www", ""):
-                return HttpResponseRedirect(reverse("company_not_found"))
+            not_found_url = reverse("company_not_found")
+            if subdomain not in ("www", "") and request.path != not_found_url:
+                return HttpResponseRedirect(not_found_url)
             return self.get_response(request)
         try:
             if request.path == reverse("company_healthz"):
@@ -35,6 +36,8 @@ class SubdomainCompanyMiddleware:
             request.company = None
             if subdomain not in ("www", ""):
                 set_current_company(None)
-                return HttpResponseRedirect(reverse("company_not_found"))
+                not_found_url = reverse("company_not_found")
+                if request.path != not_found_url:
+                    return HttpResponseRedirect(not_found_url)
         set_current_company(request.company)
         return self.get_response(request)
