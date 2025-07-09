@@ -8,7 +8,9 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    command: python manage.py runserver 0.0.0.0:5005
+
+    command: ./start.sh
+
     networks:
       - db_network
       - web_network

@@ -203,6 +203,7 @@ def company_users(request):
         {"users": users, "parent": "company", "segment": "users"},
     )
 
+
 @login_required
 def billing_portal(request):
     if not request.company or not request.company.stripe_customer_id:

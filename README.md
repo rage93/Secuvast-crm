@@ -79,6 +79,12 @@ using:
 docker compose up
 ```
 
+
+The `appseed-app` container runs `python manage.py migrate` on startup so new
+database tables are created automatically. If running the project outside of
+Docker, remember to apply migrations manually with `python manage.py migrate`.
+
+
 Whenever you modify the code, the web service reloads via Django's runserver
 and the Celery worker restarts thanks to `watchmedo`.
 
@@ -121,7 +127,6 @@ Generate demo data locally with:
 ```bash
 python scripts/make_demo_data.py
 ```
-
 
 
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)
