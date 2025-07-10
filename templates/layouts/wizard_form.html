@@ -7,6 +7,19 @@
     <div class="col-12 text-center">
       <h4 class="mt-5 font-weight-bolder h4">{% block title %}{% endblock %}</h4>
       <h5 class="font-weight-normal text-md opacity-6">{% block subtitle %}{% endblock %}</h5>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form and form.errors %}
+        <div class="alert alert-danger" role="alert">
+          Please correct the errors below.
+        </div>
+      {% endif %}
       <div class="multisteps-form mb-5">
         <div class="row">
           <div class="col-12 col-lg-8 mx-auto my-5">

@@ -1,6 +1,7 @@
 from django.urls import path
 from apps.pages import views
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
 
 
 urlpatterns = [
@@ -35,6 +36,7 @@ urlpatterns = [
     # Pages
     path('pages/rtl/', views.rtl, name="rtl"),
     path('pages/pricing/', views.pricing, name="pricing"),
+    path('faq/', views.faq, name="faq"),
     path('landing/', views.landing, name="landing_old"),
     path('pages/widgets/', views.widgets, name="widgets"),
     path('pages/charts/', views.charts, name="page_charts"),
@@ -104,5 +106,5 @@ urlpatterns = [
     path('error/500/', views.error_500, name="error_500"),
 
     # Logout
-    path('accounts/logout/', views.logout_view, name='logout'),
+    path('accounts/logout/', LogoutView.as_view(next_page="/accounts/basic-login/"), name='logout'),
 ]

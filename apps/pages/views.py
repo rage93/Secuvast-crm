@@ -3,7 +3,8 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChan
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
 from apps.pages.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
-from django.contrib.auth import logout
+from django.contrib import messages
+from allauth.account.utils import send_email_confirmation
 from django.contrib.auth.decorators import login_required
 from apps.companies.decorators import company_active_required, active_user_required
 
@@ -200,6 +201,14 @@ def landing(request):
   }
   return render(request, 'pages/pages/landing-page.html', context)
 
+def faq(request):
+  """Public frequently asked questions page."""
+  context = {
+    'parent': 'pages',
+    'segment': 'faq'
+  }
+  return render(request, 'pages/pages/faq.html', context)
+
 def widgets(request):
   context = {
     'parent': 'pages',
@@ -355,11 +364,12 @@ def basic_register(request):
   if request.method == 'POST':
     form = RegistrationForm(request.POST)
     if form.is_valid():
-      form.save()
-      print('Account created successfully!')
+      user = form.save()
+      send_email_confirmation(request, user)
+      messages.success(request, "Please check your inbox to confirm your account.")
       return redirect('/accounts/basic-login/')
     else:
-      print("Register failed!")
+      messages.error(request, "Register failed!")
   else:
     form = RegistrationForm()
 
@@ -370,11 +380,12 @@ def cover_register(request):
   if request.method == 'POST':
     form = RegistrationForm(request.POST)
     if form.is_valid():
-      form.save()
-      print('Account created successfully!')
+      user = form.save()
+      send_email_confirmation(request, user)
+      messages.success(request, "Please check your inbox to confirm your account.")
       return redirect('/accounts/cover-login/')
     else:
-      print("Register failed!")
+      messages.error(request, "Register failed!")
   else:
     form = RegistrationForm()
 
@@ -385,11 +396,12 @@ def illustration_register(request):
   if request.method == 'POST':
     form = RegistrationForm(request.POST)
     if form.is_valid():
-      form.save()
-      print('Account created successfully!')
+      user = form.save()
+      send_email_confirmation(request, user)
+      messages.success(request, "Please check your inbox to confirm your account.")
       return redirect('/accounts/illustration-login/')
     else:
-      print("Register failed!")
+      messages.error(request, "Register failed!")
   else:
     form = RegistrationForm()
 
@@ -444,9 +456,7 @@ def error_404(request, exception=None):
 def error_500(request, exception=None):
   return render(request, 'accounts/error/500.html')
 
-def logout_view(request):
-  logout(request)
-  return redirect('/accounts/basic-login/')
+
 
 
 # i18n

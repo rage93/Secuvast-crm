@@ -31,6 +31,7 @@ class Profile(CompanyScopedModel):
     zip_code = models.CharField(max_length=255, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
+    position = models.CharField(max_length=100, null=True, blank=True)
     avatar = models.ImageField(upload_to=avatar_with_id, null=True, blank=True)
     bio = QuillField(default=convert_to_quill())
     dark_mode = models.BooleanField(default=False)

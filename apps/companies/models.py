@@ -43,7 +43,9 @@ class Company(models.Model):
         DELETED = "DELETED", "Deleted"
 
     name = models.CharField(max_length=255)
-    plan = models.CharField(max_length=50, default="free")
+
+    plan = models.CharField(max_length=50, default="basic")
+
     trial_ends = models.DateField(null=True, blank=True)
     life_cycle = models.CharField(
         max_length=10,
@@ -54,6 +56,9 @@ class Company(models.Model):
     legal_name = models.CharField(max_length=255, null=True, blank=True)
     primary_color = models.CharField(max_length=7, null=True, blank=True)
     stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
+    stripe_subscription_id = models.CharField(
+        max_length=255, null=True, blank=True, help_text="Latest Stripe subscription"
+    )
     db_shard = models.CharField(max_length=50, default="default")
     industry = models.CharField(max_length=255, null=True, blank=True)
     size = models.CharField(max_length=50, null=True, blank=True)
@@ -77,6 +82,10 @@ class Company(models.Model):
     ignore_subscription = models.BooleanField(
         default=False,
         help_text="Keep company active even if Stripe subscription is inactive",
+    )
+    verified = models.BooleanField(
+        default=False,
+        help_text="Payment confirmed via Stripe or manually",
     )
     grace_until = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(
@@ -174,13 +183,30 @@ class CompanyScopedModel(models.Model):
 class Subscription(CompanyScopedModel):
     """Track Stripe subscription for a company."""
 
+    class Plan(models.TextChoices):
+        BASIC = "basic", "Basic"
+        PRO = "pro", "Pro"
+
+    class Status(models.TextChoices):
+        TRIAL = "trialing", "Trial"
+        ACTIVE = "active", "Active"
+        PAST_DUE = "past_due", "Past Due"
+        CANCELED = "canceled", "Canceled"
+
     stripe_subscription_id = models.CharField(max_length=255, unique=True)
-    status = models.CharField(max_length=50)
+    plan = models.CharField(max_length=10, choices=Plan.choices)
+    status = models.CharField(max_length=20, choices=Status.choices)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    cancel_at_period_end = models.BooleanField(default=False)
+    currency = models.CharField(max_length=10, default="usd")
+    amount = models.IntegerField(default=0, help_text="Amount in cents")
+    stripe_data = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.company} - {self.status}"
+        return f"{self.company} - {self.plan} - {self.status}"
 
 
 class CompanySetting(CompanyScopedModel):
@@ -234,3 +260,34 @@ class StripeWebhookLog(models.Model):
 
     def __str__(self):
         return f"{self.event_id} ({self.status})"
+
+
+class Invoice(CompanyScopedModel):
+    """Store basic Stripe invoice data."""
+
+    stripe_invoice_id = models.CharField(max_length=255, unique=True)
+    subscription = models.ForeignKey(
+        Subscription, related_name="invoices", on_delete=models.CASCADE
+    )
+    status = models.CharField(max_length=50)
+    amount_due = models.IntegerField()
+    currency = models.CharField(max_length=10)
+    hosted_invoice_url = models.URLField(null=True, blank=True)
+    created_at = models.DateTimeField()
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.subscription} - {self.status}"
+
+
+class PaymentMethod(CompanyScopedModel):
+    """Basic payment method info for reference."""
+
+    stripe_pm_id = models.CharField(max_length=255, unique=True)
+    brand = models.CharField(max_length=50, null=True, blank=True)
+    last4 = models.CharField(max_length=4, null=True, blank=True)
+    exp_month = models.PositiveSmallIntegerField(null=True, blank=True)
+    exp_year = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.stripe_pm_id

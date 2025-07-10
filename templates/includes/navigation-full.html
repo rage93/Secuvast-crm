@@ -54,6 +54,9 @@
                       <a href="{% url "new_user" %}" class="dropdown-item border-radius-md">
                         <span class="ps-2">New User</span>
                       </a>
+                      <a href="{% url "invite_user" %}" class="dropdown-item border-radius-md">
+                        <span class="ps-2">Invite User</span>
+                      </a>
                       <hr class="vertical dark">
                     </div>
                     <div class="col-4 position-relative">
@@ -153,6 +156,9 @@
                 <a href="{% url "new_user" %}" class="dropdown-item border-radius-md">
                   New User
                 </a>
+                <a href="{% url "invite_user" %}" class="dropdown-item border-radius-md">
+                  Invite User
+                </a>
                 <div class="dropdown-header text-dark font-weight-bolder d-flex align-items-center px-0 mt-3">
                   <i class="material-symbols-rounded text-dark opacity-6 me-2 text-md">badge</i>
                   Profile
@@ -242,12 +248,14 @@
                         </a>
                       </div>
                     </li>
+                    {% if request.user.is_authenticated %}
                     <li class="nav-item list-group-item border-0 p-0">
                       <a class="dropdown-item border-radius-md ps-3 d-flex align-items-center mb-1 text-dark" href="{% url 'signup_company' %}">
                         <i class="material-symbols-rounded opacity-6 me-2 text-md">assignment</i>
                         <span>Create Company</span>
                       </a>
                     </li>
+                    {% endif %}
                     <li class="nav-item dropdown dropdown-hover dropdown-subitem list-group-item border-0 p-0">
                       <a class="dropdown-item border-radius-md ps-3 d-flex align-items-center mb-1 text-dark" id="dropdownPasswordReset">
                         <i class="material-symbols-rounded opacity-6 me-2 text-md">restart_alt</i>
@@ -335,11 +343,13 @@
                   <a href="{% url "illustration_login" %}" class="dropdown-item border-radius-md ps-4">
                     Illustration
                   </a>
+                  {% if request.user.is_authenticated %}
                   <h6 class="dropdown-header text-dark font-weight-bolder d-flex align-items-center mt-3 px-0">
                     <i class="material-symbols-rounded opacity-6 me-2 text-md">assignment</i>
                     Create Company
                   </h6>
                   <a href="{% url 'signup_company' %}" class="dropdown-item border-radius-md ps-4">Create Company</a>
+                  {% endif %}
                   <h6 class="dropdown-header text-dark font-weight-bolder d-flex align-items-center mt-3 px-0">
                     <i class="material-symbols-rounded opacity-6 me-2 text-md">restart_alt</i>
                     Reset Password

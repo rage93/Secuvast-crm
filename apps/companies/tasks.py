@@ -25,24 +25,38 @@ def verify_subscriptions():
         return
     stripe.api_key = settings.STRIPE_SECRET_KEY
     try:
-        remote_status = {}
+        remote_data = {}
         for sub in stripe.Subscription.list(limit=100).auto_paging_iter():
-            remote_status[sub["id"]] = sub.get("status")
+            remote_data[sub["id"]] = sub
 
         for sub in Subscription.objects.select_related("company").all():
             company = sub.company
             if not company or company.ignore_subscription:
                 continue
-            status = remote_status.get(sub.stripe_subscription_id)
-            if not status:
+            data = remote_data.get(sub.stripe_subscription_id)
+            if not data:
                 try:
-                    resp = stripe.Subscription.retrieve(sub.stripe_subscription_id)
-                    status = resp.get("status", "")
+                    data = stripe.Subscription.retrieve(sub.stripe_subscription_id)
                 except Exception:
                     continue
+            status = data.get("status", "")
+            updates = {}
             if sub.status != status:
-                sub.status = status
-                sub.save(update_fields=["status", "updated_at"])
+                updates["status"] = status
+            new_end = timezone.datetime.fromtimestamp(data.get("current_period_end"), tz=timezone.utc)
+            if sub.end_date != new_end:
+                updates["end_date"] = new_end
+            new_start = timezone.datetime.fromtimestamp(data.get("current_period_start"), tz=timezone.utc)
+            if sub.start_date != new_start:
+                updates["start_date"] = new_start
+            updates["cancel_at_period_end"] = data.get("cancel_at_period_end", False)
+            updates["amount"] = data.get("plan", {}).get("amount", sub.amount)
+            updates["currency"] = data.get("plan", {}).get("currency", sub.currency)
+            updates["stripe_data"] = data
+            if updates:
+                for k, v in updates.items():
+                    setattr(sub, k, v)
+                sub.save()
             if status not in ["active", "trialing"]:
                 if company.grace_until and company.grace_until > timezone.now():
                     continue
