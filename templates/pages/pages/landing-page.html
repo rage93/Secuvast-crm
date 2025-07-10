@@ -15,11 +15,12 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="{% url 'pricing' %}">{% trans "Pricing" %}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'faq' %}">FAQ</a></li>
         {% if request.user.is_authenticated %}
         <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">{% trans "Dashboard" %}</a></li>
         {% else %}
         <li class="nav-item"><a class="nav-link" href="{% url 'basic_login' %}">{% trans "Login" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'signup_company' %}">{% trans "Create Company" %}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'basic_register' %}">{% trans "Sign up" %}</a></li>
         {% endif %}
       </ul>
     </div>
@@ -32,7 +33,7 @@
   <div class="container text-center">
     <h1 class="display-4 mb-3 fade-scroll">{% trans "Manage your business effortlessly" %}</h1>
     <p class="lead fade-scroll">{% trans "Secuvast CRM helps you track customers, inventory and finances in one place." %}</p>
-    <a class="btn btn-primary btn-lg mt-4" href="{% url 'signup_company' %}">{% trans "Get started" %}</a>
+    <a class="btn btn-primary btn-lg mt-4" href="{% url 'basic_register' %}">{% trans "Get started" %}</a>
   </div>
 </section>
 

@@ -5,11 +5,17 @@
 
   <div class="page-header bg-gradient-dark position-relative m-3 border-radius-xl min-vh-50" style="background-image: url('{% static "assets/img/bg-pricing.jpg" %}');">
     <span class="mask bg-gradient-dark opacity-2"></span>
-    <div class="container py-10 postion-relative z-index-2">
+    <div class="container py-10 position-relative z-index-2">
       <div class="row">
         <div class="col-md-6 mx-auto text-center">
           <h2 class="text-white">Pick the best plan for you</h2>
           <p class="text-white">You have Free Unlimited Updates and Premium Support on each package.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+          <h2 class="text-white">Choose the right plan for your team</h2>
+          <p class="text-white">Start on Basic and upgrade to Pro as your company grows.</p>
         </div>
       </div>
     </div>
@@ -38,153 +44,70 @@
         <div class="tab-content tab-space">
           <div class="tab-pane active" id="monthly">
             <div class="row">
-              <div class="col-lg-4 mb-lg-0 mb-4">
+              <div class="col-lg-6 mb-4">
                 <div class="card shadow-lg">
-                  <span class="badge rounded-pill bg-light text-dark w-30 mt-n2 mx-auto">Starter</span>
                   <div class="card-header text-center pt-4 pb-3">
+                    <h4 class="font-weight-bolder">Basic</h4>
                     <h1 class="font-weight-bold mt-2">
-                      <small class="text-lg align-top me-1">$</small>59<small class="text-lg">/mo</small>
+                      <small class="text-lg align-top me-1">$</small>10<small class="text-lg">/mo</small>
                     </h1>
                   </div>
                   <div class="card-body text-lg-start text-center pt-0">
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">2 team members</span>
+                      <span class="ps-3">Up to 3 users</span>
                     </div>
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">20GB Cloud storage </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Integration help </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">Sketch Files </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">API Access </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">Complete documentation </span>
+                      <span class="ps-3">Email support</span>
                     </div>
                     {% if request.user.is_authenticated and request.session.onboard_company_id %}
                     <form method="post" action="{% url 'choose_plan' %}">
                       {% csrf_token %}
-                      <input type="hidden" name="plan" value="free">
+                      <input type="hidden" name="plan" value="basic">
                       <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
                         Select
                         <i class="fas fa-arrow-right ms-1"></i>
                       </button>
                     </form>
                     {% else %}
-                    <a href="{% url 'signup_company' %}?plan=free" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
-                      Join
+                    <a href="{% url 'signup_company' %}?plan=basic" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                      Choose Basic
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                     {% endif %}
                   </div>
                 </div>
               </div>
-              <div class="col-lg-4 mb-lg-0 mb-4">
+              <div class="col-lg-6 mb-4">
                 <div class="card bg-gradient-dark shadow-lg">
-                  <span class="badge rounded-pill bg-primary w-30 mt-n2 mx-auto">Premium</span>
                   <div class="card-header text-center pt-4 pb-3 bg-transparent">
+                    <h4 class="text-white font-weight-bolder">Pro</h4>
                     <h1 class="font-weight-bold mt-2 text-white">
-                      <small class="text-lg align-top me-1">$</small>89<small class="text-lg">/mo</small>
+                      <small class="text-lg align-top me-1">$</small>30<small class="text-lg">/mo</small>
                     </h1>
                   </div>
                   <div class="card-body text-lg-start text-center pt-0">
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">10 team members</span>
+                      <span class="ps-3 text-white">Up to 50 users</span>
                     </div>
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">40GB Cloud storage </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">Integration help </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">Sketch Files </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">remove</i>
-                      <span class="ps-3 text-white">API Access </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">remove</i>
-                      <span class="ps-3 text-white">Complete documentation </span>
+                      <span class="ps-3 text-white">Priority support</span>
                     </div>
                     {% if request.user.is_authenticated and request.session.onboard_company_id %}
                     <form method="post" action="{% url 'choose_plan' %}">
                       {% csrf_token %}
                       <input type="hidden" name="plan" value="pro">
-                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                      <button class="btn btn-icon bg-white text-dark d-lg-block mt-3 mb-0" type="submit">
                         Select
                         <i class="fas fa-arrow-right ms-1"></i>
                       </button>
                     </form>
                     {% else %}
-                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
-                      Try Premium
-                      <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 mb-lg-0 mb-4">
-                <div class="card shadow-lg">
-                  <span class="badge rounded-pill bg-light text-dark w-30 mt-n2 mx-auto">Enterprise</span>
-                  <div class="card-header text-center pt-4 pb-3">
-                    <h1 class="font-weight-bold mt-2">
-                      <small class="text-lg align-top me-1">$</small>99<small class="text-lg">/mo</small>
-                    </h1>
-                  </div>
-                  <div class="card-body text-lg-start text-center pt-0">
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Unlimited team members</span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">100GB Cloud storage </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Integration help </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Sketch Files </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">API Access </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Complete documentation </span>
-                    </div>
-                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
-                    <form method="post" action="{% url 'choose_plan' %}">
-                      {% csrf_token %}
-                      <input type="hidden" name="plan" value="pro">
-                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
-                        Select
-                        <i class="fas fa-arrow-right ms-1"></i>
-                      </button>
-                    </form>
-                    {% else %}
-                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
-                      Join
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-white text-dark d-lg-block mt-3 mb-0">
+                      Choose Pro
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                     {% endif %}
@@ -195,153 +118,70 @@
           </div>
           <div class="tab-pane" id="annual">
             <div class="row">
-              <div class="col-lg-4 mb-lg-0 mb-4">
+              <div class="col-lg-6 mb-4">
                 <div class="card shadow-lg">
-                  <span class="badge rounded-pill bg-light text-dark w-30 mx-auto">Starter</span>
                   <div class="card-header text-center pt-4 pb-3">
+                    <h4 class="font-weight-bolder">Basic</h4>
                     <h1 class="font-weight-bold mt-2">
-                      <small class="text-lg align-top me-1">$</small>119<small class="text-lg">/mo</small>
+                      <small class="text-lg align-top me-1">$</small>100<small class="text-lg">/yr</small>
                     </h1>
                   </div>
                   <div class="card-body text-lg-start text-center pt-0">
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">2 team members</span>
+                      <span class="ps-3">Up to 3 users</span>
                     </div>
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">20GB Cloud storage </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">Integration help </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">Sketch Files </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">API Access </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">remove</i>
-                      <span class="ps-3">Complete documentation </span>
+                      <span class="ps-3">Email support</span>
                     </div>
                     {% if request.user.is_authenticated and request.session.onboard_company_id %}
                     <form method="post" action="{% url 'choose_plan' %}">
                       {% csrf_token %}
-                      <input type="hidden" name="plan" value="pro">
+                      <input type="hidden" name="plan" value="basic">
                       <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
                         Select
                         <i class="fas fa-arrow-right ms-1"></i>
                       </button>
                     </form>
                     {% else %}
-                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
-                      Join
+                    <a href="{% url 'signup_company' %}?plan=basic" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
+                      Choose Basic
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                     {% endif %}
                   </div>
                 </div>
               </div>
-              <div class="col-lg-4 mb-lg-0 mb-4">
+              <div class="col-lg-6 mb-4">
                 <div class="card bg-gradient-dark shadow-lg">
-                  <span class="badge rounded-pill bg-primary w-30 mx-auto">Premium</span>
                   <div class="card-header text-center pt-4 pb-3 bg-transparent">
+                    <h4 class="text-white font-weight-bolder">Pro</h4>
                     <h1 class="font-weight-bold mt-2 text-white">
-                      <small class="text-lg align-top me-1">$</small>159<small class="text-lg">/mo</small>
+                      <small class="text-lg align-top me-1">$</small>300<small class="text-lg">/yr</small>
                     </h1>
                   </div>
                   <div class="card-body text-lg-start text-center pt-0">
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">10 team members</span>
+                      <span class="ps-3 text-white">Up to 50 users</span>
                     </div>
                     <div class="d-flex justify-content-lg-start justify-content-center p-2">
                       <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">40GB Cloud storage </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">Integration help </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">done</i>
-                      <span class="ps-3 text-white">Sketch Files </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">remove</i>
-                      <span class="ps-3 text-white">API Access </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto text-white">remove</i>
-                      <span class="ps-3 text-white">Complete documentation </span>
+                      <span class="ps-3 text-white">Priority support</span>
                     </div>
                     {% if request.user.is_authenticated and request.session.onboard_company_id %}
                     <form method="post" action="{% url 'choose_plan' %}">
                       {% csrf_token %}
                       <input type="hidden" name="plan" value="pro">
-                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
+                      <button class="btn btn-icon bg-white text-dark d-lg-block mt-3 mb-0" type="submit">
                         Select
                         <i class="fas fa-arrow-right ms-1"></i>
                       </button>
                     </form>
                     {% else %}
-                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
-                      Try Premium
-                      <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 mb-lg-0 mb-4">
-                <div class="card shadow-lg">
-                  <span class="badge rounded-pill bg-light text-dark w-30 mx-auto">Enterprise</span>
-                  <div class="card-header text-center pt-4 pb-3">
-                    <h1 class="font-weight-bold mt-2">
-                      <small class="text-lg align-top me-1">$</small>399<small class="text-lg">/mo</small>
-                    </h1>
-                  </div>
-                  <div class="card-body text-lg-start text-center pt-0">
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Unlimited team members</span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">100GB Cloud storage </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Integration help </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Sketch Files </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">API Access </span>
-                    </div>
-                    <div class="d-flex justify-content-lg-start justify-content-center p-2">
-                      <i class="material-symbols-rounded my-auto">done</i>
-                      <span class="ps-3">Complete documentation </span>
-                    </div>
-                    {% if request.user.is_authenticated and request.session.onboard_company_id %}
-                    <form method="post" action="{% url 'choose_plan' %}">
-                      {% csrf_token %}
-                      <input type="hidden" name="plan" value="pro">
-                      <button class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0" type="submit">
-                        Select
-                        <i class="fas fa-arrow-right ms-1"></i>
-                      </button>
-                    </form>
-                    {% else %}
-                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-gradient-dark d-lg-block mt-3 mb-0">
-                      Join
+                    <a href="{% url 'signup_company' %}?plan=pro" class="btn btn-icon bg-white text-dark d-lg-block mt-3 mb-0">
+                      Choose Pro
                       <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                     {% endif %}

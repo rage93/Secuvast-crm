@@ -35,7 +35,7 @@
                 {{ request.user.username }}
               {% endif %}
             </h6>
-            <p class="mb-0 text-muted">UI/UX Designer</p>
+            <p class="mb-0 text-muted">{{ request.user.profile.position|default:"" }}</p>
           </div>
         </div>
       </div>
@@ -103,6 +103,11 @@
                   <td class="">{{ request.user.profile.full_name|default_if_none:"" }}</td>
                 </tr>
                 <tr>
+                  <td class="">Position</td>
+                  <td class="">:</td>
+                  <td class="">{{ request.user.profile.position|default_if_none:"" }}</td>
+                </tr>
+                <tr>
                   <td class="">Address</td>
                   <td class="">:</td>
                   <td class="">{{ request.user.profile.address|default_if_none:"" }}{% if request.user.profile.city %}, {{request.user.profile.city}}{% endif %}{% if request.user.profile.country %}, {{request.user.profile.country}}{% endif %} </td>
@@ -145,14 +150,20 @@
               </div>
               <div class="col-sm-6">
                 <div class="form-group mb-3">
+                  <label class="form-label">Position</label>
+                  <input type="text" name="position" class="form-control border ps-2" value="{{ request.user.profile.position|default_if_none:"" }}">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group mb-3">
                   <label class="form-label">Contact Phone</label>
                   <input type="text" name="phone" class="form-control border ps-2" value="{{ request.user.profile.phone|default_if_none:"" }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group mb-3">
-                  <label class="form-label">Email <span class="text-black-50">(Read Only)</span></label>
-                  <input type="text" readonly class="form-control border ps-2" name="email" value="{{ request.user.email }}">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control border ps-2" name="email" value="{{ request.user.email }}">
                 </div>
               </div>
               <div class="col-sm-6">

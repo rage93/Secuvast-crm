@@ -415,12 +415,14 @@
                   </ul>
                 </div>
               </li>
+              {% if request.user.is_authenticated %}
               <li class="nav-item ">
                 <a class="nav-link text-dark " href="{% url 'signup_company' %}">
                   <span class="sidenav-mini-icon"> S </span>
                   <span class="sidenav-normal  me-3  ps-1"> Create Company </span>
                 </a>
               </li>
+              {% endif %}
               <li class="nav-item ">
                 <a class="nav-link text-dark " data-bs-toggle="collapse" aria-expanded="false" href="#resetExample">
                   <span class="sidenav-mini-icon"> R </span>

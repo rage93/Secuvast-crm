@@ -137,7 +137,7 @@ def accept_invite(request, token):
             user = form.save(company=company)
             user.email = email
             user.save()
-            login(request, user)
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
             messages.success(request, "Account created successfully")
             return redirect("user_profile")
     else:
