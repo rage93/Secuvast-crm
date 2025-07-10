@@ -43,7 +43,9 @@ class Company(models.Model):
         DELETED = "DELETED", "Deleted"
 
     name = models.CharField(max_length=255)
+
     plan = models.CharField(max_length=50, default="basic")
+
     trial_ends = models.DateField(null=True, blank=True)
     life_cycle = models.CharField(
         max_length=10,

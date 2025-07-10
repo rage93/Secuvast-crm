@@ -62,8 +62,10 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
         "created_by",
         "created_at",
     )
+    
     search_fields = ("name", "legal_name", "stripe_customer_id", "stripe_subscription_id")
     list_filter = ("life_cycle", "plan", "industry", "timezone", "verified", InGracePeriodFilter)
+
 
     inlines = [AuditLogInline]
 

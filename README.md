@@ -72,6 +72,7 @@ lead you to the sign‑up form with the plan preselected.
 
 
 All companies share the same base URL. Access to data is restricted based on
+
 the company associated with each user. Make sure you access the site using the
 domain configured in `SAAS_ROOT_DOMAIN` (default `localhost`). If you still
 visit old subdomains, the application now redirects them back to the base
@@ -81,7 +82,7 @@ After pulling updates remember to apply migrations:
 
 ```bash
 python manage.py migrate
-```
+
 
 
 ## Auto Reload with Docker

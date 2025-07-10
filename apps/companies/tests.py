@@ -52,7 +52,9 @@ class StripeWebhookTests(TestCase):
         self.company.grace_until = timezone.now() - timedelta(days=1)
         self.company.life_cycle = Company.LifeCycle.SUSPENDED
         self.company.save()
+
         resp = self.client.get(reverse("smart_home"), HTTP_HOST="localhost")
+
         self.assertEqual(resp.status_code, 403)
 
     @override_settings(STRIPE_WEBHOOK_SECRET="whsec")
@@ -86,8 +88,10 @@ class StripeWebhookTests(TestCase):
 
 @override_settings(CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}})
 class PlanLimitTests(TestCase):
+
     def test_user_limit_basic_plan(self):
         company = Company.objects.create(name="FreeCo", plan="basic")
+
         for i in range(3):
             user = User.objects.create_user(username=f"u{i}")
             user.profile.company = company

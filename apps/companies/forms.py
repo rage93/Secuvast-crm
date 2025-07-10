@@ -2,6 +2,7 @@ from django import forms
 
 
 class CompanySignupForm(forms.Form):
+
     """Simple form to capture company details from an authenticated user."""
 
     company_name = forms.CharField(max_length=255)
