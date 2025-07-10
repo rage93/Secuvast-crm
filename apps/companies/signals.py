@@ -15,7 +15,7 @@ def create_default_groups(sender, instance, created, **kwargs):
     if created:
         for group_name, perms in GROUP_PERMISSIONS.items():
             group, _ = Group.objects.get_or_create(
-                name=f"{instance.slug_subdomain}-{group_name}"
+                name=f"{instance.id}-{group_name}"
             )
             for perm_code in perms:
                 app_label, codename = perm_code.split(".")
@@ -98,17 +98,3 @@ def audit_lifecycle_change(sender, instance, created, **kwargs):
         )
 
 
-RESERVED_SUBDOMAINS = {"www", "admin", "api"}
-
-
-@receiver(pre_save, sender=Company)
-def validate_slug_unique(sender, instance, **kwargs):
-    """Ensure unique, non-reserved subdomains."""
-    slug = instance.slug_subdomain.lower()
-    if slug in RESERVED_SUBDOMAINS:
-        raise ValidationError("Subdominio reservado")
-    qs = Company.objects.filter(slug_subdomain__iexact=slug)
-    if instance.pk:
-        qs = qs.exclude(pk=instance.pk)
-    if qs.exists():
-        raise ValidationError("Subdominio ya existe")

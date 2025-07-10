@@ -8,7 +8,6 @@ class CompanyFactory(factory.django.DjangoModelFactory):
         model = Company
 
     name = factory.Sequence(lambda n: f"Co{n}")
-    slug_subdomain = factory.Sequence(lambda n: f"co{n}")
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:

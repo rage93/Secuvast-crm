@@ -39,34 +39,49 @@
 ## Company Sign-Up
 
 
-Only the first administrator should create an account using the company sign‑up page:
+Only authenticated users can create a company. First register an account and then visit the company sign‑up page:
 
 ```
 /company/signup/
 ```
 
 
-During sign up the user account and the company are created in one step. After
-registration you are redirected to the pricing page to select a plan and
-complete payment via Stripe. Additional members are invited from the
-administration area once signed in.
+During company creation only the organization details are collected. Your user
+account is linked as the company admin and you are redirected straight to the
+dashboard. Choose a **Basic** or **Pro** subscription from the pricing page when
+you're ready to activate the company via Stripe. The company becomes active once
+the payment is verified or after manual confirmation by an administrator. Each
+successful checkout stores the Stripe subscription ID on the Company so the
+status can be validated later.
 
 
 The full onboarding flow works as follows:
 
-1. Visit the landing page and choose **Create Company**.
-2. Fill out the sign‑up form which creates both the user and the company.
-3. Pick a plan on the pricing page and complete payment when required.
-4. After checkout you are taken straight to your company dashboard.
-5. Invite additional members from the *Company → Users* section.
+1. Register a user account from the login page.
+2. After signing in, choose **Create Company** from the navigation.
+3. Enter your company details.
+4. After saving the company you are redirected to the dashboard and a short
+   message confirms the organization was created.
+5. Visit the pricing page whenever you wish to activate the company by choosing
+   the Basic or Pro plan and completing payment via Stripe.
+6. Once payment is confirmed you can invite teammates from the **Invite User**
+   option under the Users menu or create accounts directly with **New User**.
 
 You can also start from the public pricing page. Choosing a plan there will
 lead you to the sign‑up form with the plan preselected.
 
 
-When running locally, add entries to your `hosts` file so subdomains resolve to
-`127.0.0.1` (e.g. `myco.localhost`). After authentication, users are
-automatically redirected to their company subdomain.
+All companies share the same base URL. Access to data is restricted based on
+the company associated with each user. Make sure you access the site using the
+domain configured in `SAAS_ROOT_DOMAIN` (default `localhost`). If you still
+visit old subdomains, the application now redirects them back to the base
+domain so your session cookies work correctly.
+
+After pulling updates remember to apply migrations:
+
+```bash
+python manage.py migrate
+```
 
 
 ## Auto Reload with Docker
@@ -87,6 +102,20 @@ Docker, remember to apply migrations manually with `python manage.py migrate`.
 
 Whenever you modify the code, the web service reloads via Django's runserver
 and the Celery worker restarts thanks to `watchmedo`.
+
+## Email Verification
+
+User registration now sends a confirmation email using `django-allauth`.
+Set your Gmail credentials in the `.env` file:
+
+```
+EMAIL_HOST=<your gmail address>
+EMAIL_PASS=<your app password>
+DEFAULT_FROM_EMAIL=<display sender>
+```
+
+With these variables defined the application sends a verification link to
+new users. Accounts remain inactive until the email address is confirmed.
 
 ## Data Integrity
 
@@ -127,6 +156,23 @@ Generate demo data locally with:
 ```bash
 python scripts/make_demo_data.py
 ```
+
+## Link Checker
+
+Ensure navigation links work for each user role using the
+`check_links` management command. It logs in as the specified user,
+crawls pages starting from `/`, and reports any HTTP errors.
+
+```bash
+python manage.py check_links --username=admin
+```
+
+Use `--depth` to follow links recursively or `--start-url` to test a
+different entry point.
+
+This command is also available via the **Tasks** page in the admin
+sidebar. Choose the `check_links.py` script and Celery will execute it
+asynchronously, storing the logs for later review.
 
 
 ## [Documentation](https://app-generator.dev/docs/products/django/material-dashboard-pro/index.html)

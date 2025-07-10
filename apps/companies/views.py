@@ -1,18 +1,12 @@
 import json
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth import login
-from django.contrib.auth.models import User
 
-def _tenant_host(request, company):
-    port = request.get_port()
-    host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
-    if port not in ("80", "443"):
-        host += f":{port}"
-    return host
 
 from .models import Company, Subscription, StripeEvent, StripeWebhookLog
 from .forms import CompanySignupForm
@@ -36,6 +30,14 @@ def handle_stripe_event(event: dict):
         subscription = Subscription.objects.filter(stripe_subscription_id=sub_id).first()
         if subscription:
             subscription.status = status
+            subscription.cancel_at_period_end = data.get("cancel_at_period_end", False)
+            subscription.end_date = timezone.datetime.fromtimestamp(
+                data.get("current_period_end"), tz=timezone.utc
+            )
+            subscription.start_date = timezone.datetime.fromtimestamp(
+                data.get("current_period_start"), tz=timezone.utc
+            )
+            subscription.stripe_data = data
             subscription.save()
             company = subscription.company
             if status not in ["active", "trialing"]:
@@ -77,31 +79,30 @@ def stripe_webhook(request):
     return HttpResponse("")
 
 
+@login_required(login_url='/accounts/basic-login/')
 def signup_company(request):
-    """Create user and company then send to plan selection."""
-    plan = request.GET.get("plan", "free")
+    """Allow an authenticated user to create a company."""
+    plan = request.GET.get("plan", "basic")
+
     if request.method == "POST":
         form = CompanySignupForm(request.POST)
         if form.is_valid():
             company = Company.objects.create(
                 name=form.cleaned_data["company_name"],
-                slug_subdomain=form.cleaned_data["subdomain"],
                 plan=plan,
+                created_by=request.user,
+                life_cycle=Company.LifeCycle.SUSPENDED,
             )
-            user = User.objects.create_user(
-                username=form.cleaned_data["username"],
-                email=form.cleaned_data["email"],
-                password=form.cleaned_data["password1"],
-            )
-            profile = user.profile
+            profile = request.user.profile
             profile.company = company
             profile.role = "admin"
             profile.save()
-            company.created_by = user
-            company.save(update_fields=["created_by"])
-            login(request, user)
             request.session["onboard_company_id"] = company.id
-            return redirect("choose_plan")
+            messages.success(
+                request,
+                "Company created successfully. Select a plan from the pricing page whenever you're ready.",
+            )
+            return redirect("/dashboard/")
     else:
         form = CompanySignupForm()
 
@@ -115,21 +116,38 @@ def signup_success(request):
         return redirect("basic_login")
     session = stripe.checkout.Session.retrieve(session_id)
     company_id = session.metadata.get("company_id")
+    plan_meta = session.metadata.get("plan")
     company = get_object_or_404(Company, id=company_id)
+    if plan_meta:
+        company.plan = plan_meta
     company.stripe_customer_id = session.customer
-    company.save(update_fields=["stripe_customer_id"])
+    subscription_obj = None
     if session.subscription:
-        Subscription.objects.get_or_create(
+        subscription_obj = stripe.Subscription.retrieve(session.subscription)
+        company.stripe_subscription_id = session.subscription
+    company.verified = True
+    company.life_cycle = Company.LifeCycle.ACTIVE
+    company.onboarded_at = timezone.now()
+    company.save(update_fields=["stripe_customer_id", "stripe_subscription_id", "verified", "life_cycle", "onboarded_at", "plan"])
+    if subscription_obj:
+        Subscription.objects.update_or_create(
             company=company,
             stripe_subscription_id=session.subscription,
-            defaults={"status": "active"},
+            defaults={
+                "plan": plan_meta or subscription_obj.get("plan", {}).get("nickname", company.plan),
+                "status": subscription_obj.get("status", "active"),
+                "start_date": timezone.datetime.fromtimestamp(subscription_obj.get("current_period_start"), tz=timezone.utc),
+                "end_date": timezone.datetime.fromtimestamp(subscription_obj.get("current_period_end"), tz=timezone.utc),
+                "amount": subscription_obj.get("plan", {}).get("amount", 0),
+                "currency": subscription_obj.get("plan", {}).get("currency", "usd"),
+                "cancel_at_period_end": subscription_obj.get("cancel_at_period_end", False),
+                "stripe_data": subscription_obj,
+            },
         )
     user = company.created_by
     login(request, user)
     request.session.pop("onboard_company_id", None)
-    host = _tenant_host(request, company)
-
-    return HttpResponseRedirect(f"//{host}/dashboard/")
+    return redirect("/dashboard/")
 
 
 @login_required
@@ -140,23 +158,28 @@ def choose_plan(request):
         return redirect("pricing")
     company = get_object_or_404(Company, id=company_id)
     if request.method == "POST":
-        plan = request.POST.get("plan", "free")
+        plan = request.POST.get("plan", "basic")
         company.plan = plan
         company.save(update_fields=["plan"])
-        if plan == "pro":
+        price_id = settings.STRIPE_BASIC_PRICE_ID if plan == "basic" else settings.STRIPE_PRO_PRICE_ID
+        if price_id:
             session = stripe.checkout.Session.create(
                 mode="subscription",
                 success_url=request.build_absolute_uri(reverse("signup_success"))
                 + "?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url=request.build_absolute_uri(reverse("choose_plan")),
-                line_items=[{"price": settings.STRIPE_PRO_PRICE_ID, "quantity": 1}],
+                line_items=[{"price": price_id, "quantity": 1}],
                 customer_email=request.user.email,
-                metadata={"company_id": company.id},
+                metadata={"company_id": company.id, "plan": plan},
             )
             return redirect(session.url)
+        company.life_cycle = Company.LifeCycle.ACTIVE
+        company.verified = True
+        company.onboarded_at = timezone.now()
+        company.stripe_subscription_id = None
+        company.save(update_fields=["plan", "life_cycle", "verified", "onboarded_at", "stripe_subscription_id"])
         request.session.pop("onboard_company_id", None)
-        host = _tenant_host(request, company)
-        return HttpResponseRedirect(f"//{host}/dashboard/")
+        return redirect("/dashboard/")
     return render(
         request,
         "pages/pages/pricing-page.html",
@@ -196,12 +219,8 @@ def company_users(request):
     if not (
         request.user.is_superuser
         or request.user.has_perm("companies.bypass_tenant_scope")
-        or (
-            request.user.profile.role == "admin"
-            and request.user.profile.company == request.company
-        )
+        or request.user.profile.company == request.company
     ):
-
         return HttpResponseForbidden()
     users = Profile.objects.filter(company=request.company).select_related("user")
     return render(

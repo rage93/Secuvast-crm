@@ -38,6 +38,9 @@ class TenantUserCreationForm(forms.ModelForm):
     def __init__(self, *args, company=None, **kwargs):
         self.company = company
         super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs.setdefault("class", "form-control")
+            field.widget.attrs.setdefault("placeholder", field.label)
 
     def clean(self):
         cleaned = super().clean()
@@ -69,4 +72,10 @@ class InviteUserForm(forms.Form):
 
     email = forms.EmailField()
     role = forms.ChoiceField(choices=ROLE_CHOICES)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.setdefault("class", "form-control")
+            field.widget.attrs.setdefault("placeholder", field.label)
 

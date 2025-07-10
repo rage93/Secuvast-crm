@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import login
 from django.conf import settings
+from django.utils.html import format_html
+import stripe
 
 from .models import Company, Subscription, AuditLog, StripeEvent
 
@@ -51,29 +53,26 @@ class InGracePeriodFilter(admin.SimpleListFilter):
 class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
     list_display = (
         "name",
-        "slug_subdomain",
         "plan",
         "life_cycle",
+        "verified",
+        "stripe_subscription_id",
         "onboarded_at",
         "website",
         "created_by",
         "created_at",
     )
-    search_fields = ("name", "legal_name", "slug_subdomain", "stripe_customer_id")
-    list_filter = ("life_cycle", "plan", "industry", "timezone", InGracePeriodFilter)
+    search_fields = ("name", "legal_name", "stripe_customer_id", "stripe_subscription_id")
+    list_filter = ("life_cycle", "plan", "industry", "timezone", "verified", InGracePeriodFilter)
 
     inlines = [AuditLogInline]
 
-    actions = ["impersonate", "login_as"]
+    actions = ["impersonate", "login_as", "activate_basic", "activate_pro"]
 
     def impersonate(self, request, queryset):
         company = queryset.first()
         if company:
-            port = request.get_port()
-            host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
-            if port not in ("80", "443"):
-                host += f":{port}"
-            url = f"//{host}{reverse('admin:index')}"
+            url = reverse('admin:index') + f"?company={company.id}"
             return HttpResponseRedirect(url)
     impersonate.short_description = "Entrar como compañía"
 
@@ -83,12 +82,26 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
             self.message_user(request, "No admin user", level=messages.ERROR)
             return
         login(request, company.created_by, backend="django.contrib.auth.backends.ModelBackend")
-        port = request.get_port()
-        host = f"{company.slug_subdomain}.{settings.SAAS_ROOT_DOMAIN}"
-        if port not in ("80", "443"):
-            host += f":{port}"
-        return HttpResponseRedirect(f"//{host}/")
+        return HttpResponseRedirect("/")
     login_as.short_description = "Login as admin"
+
+    def activate_basic(self, request, queryset):
+        for company in queryset:
+            company.plan = "basic"
+            company.verified = True
+            company.life_cycle = Company.LifeCycle.ACTIVE
+            company.save(update_fields=["plan", "verified", "life_cycle"])
+        self.message_user(request, "Activated Basic plan for selected companies")
+    activate_basic.short_description = "Activate Basic"
+
+    def activate_pro(self, request, queryset):
+        for company in queryset:
+            company.plan = "pro"
+            company.verified = True
+            company.life_cycle = Company.LifeCycle.ACTIVE
+            company.save(update_fields=["plan", "verified", "life_cycle"])
+        self.message_user(request, "Activated Pro plan for selected companies")
+    activate_pro.short_description = "Activate Pro"
 
     def get_readonly_fields(self, request, obj=None):
         fields = super().get_readonly_fields(request, obj)
@@ -99,8 +112,72 @@ class CompanyAdmin(TenantAdminMixin, admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(TenantAdminMixin, admin.ModelAdmin):
-    list_display = ("company", "stripe_subscription_id", "status")
-    search_fields = ("stripe_subscription_id",)
+    list_display = (
+        "company",
+        "plan",
+        "colored_status",
+        "next_charge",
+        "amount",
+    )
+    list_filter = ("plan", "status")
+    search_fields = ("stripe_subscription_id", "company__name")
+    readonly_fields = ("stripe_subscription_id",)
+    actions = [
+        "cancel_at_period_end",
+        "reactivate",
+        "sync_with_stripe",
+    ]
+
+    def colored_status(self, obj):
+        color = {
+            "active": "success",
+            "trialing": "info",
+            "past_due": "warning",
+            "canceled": "danger",
+        }.get(obj.status, "secondary")
+        return format_html(
+            '<span class="badge bg-{}">{}</span>', color, obj.get_status_display()
+        )
+
+    colored_status.short_description = "status"
+
+    def next_charge(self, obj):
+        return obj.end_date
+
+    def cancel_at_period_end(self, request, queryset):
+        for sub in queryset:
+            sub.cancel_at_period_end = True
+            sub.save(update_fields=["cancel_at_period_end"])
+        self.message_user(request, "Subscription will cancel at period end")
+
+    def reactivate(self, request, queryset):
+        for sub in queryset:
+            sub.cancel_at_period_end = False
+            sub.status = Subscription.Status.ACTIVE
+            sub.save(update_fields=["cancel_at_period_end", "status"])
+        self.message_user(request, "Subscription reactivated")
+
+    def sync_with_stripe(self, request, queryset):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        for sub in queryset:
+            try:
+                data = stripe.Subscription.retrieve(sub.stripe_subscription_id)
+            except Exception as exc:
+                self.message_user(request, f"Stripe error: {exc}", level=messages.ERROR)
+                continue
+            sub.status = data.get("status", sub.status)
+            sub.plan = data.get("items", {}).get("data", [{}])[0].get("price", {}).get("nickname", sub.plan)
+            sub.end_date = timezone.datetime.fromtimestamp(
+                data.get("current_period_end"), tz=timezone.utc
+            )
+            sub.start_date = timezone.datetime.fromtimestamp(
+                data.get("current_period_start"), tz=timezone.utc
+            )
+            sub.amount = data.get("plan", {}).get("amount", sub.amount)
+            sub.currency = data.get("plan", {}).get("currency", sub.currency)
+            sub.stripe_data = data
+            sub.save()
+        self.message_user(request, "Subscription synced")
 
 
 @admin.register(AuditLog)

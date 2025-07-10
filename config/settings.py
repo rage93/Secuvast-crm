@@ -106,15 +106,15 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'apps.companies.middleware.SubdomainCompanyMiddleware',
+    'apps.companies.root_redirect_middleware.RootDomainRedirectMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.companies.user_middleware.CurrentUserMiddleware',
+    'apps.companies.middleware.UserCompanyMiddleware',
     'apps.companies.rls_middleware.PostgresRLSMiddleware',
     'apps.companies.audit_middleware.AuditLogMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'apps.companies.redirect_middleware.EnsureSubdomainMiddleware',
-    'apps.companies.user_middleware.CurrentUserMiddleware',
     'apps.companies.blame_middleware.BlameMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -256,13 +256,15 @@ LOGIN_REDIRECT_URL = '/'
 
 
 # AllAuth
-ACCOUNT_EMAIL_VERIFICATION =  os.getenv('ACCOUNT_EMAIL_VERIFICATION', 'none')
+ACCOUNT_EMAIL_VERIFICATION = os.getenv('ACCOUNT_EMAIL_VERIFICATION', 'mandatory')
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_UNIQUE_EMAIL = True
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/basic-login/'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -386,10 +388,11 @@ DYNAMIC_API = {
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
+STRIPE_BASIC_PRICE_ID = os.getenv('STRIPE_BASIC_PRICE_ID', '')
 STRIPE_PRO_PRICE_ID = os.getenv('STRIPE_PRO_PRICE_ID', '')
 SAAS_ROOT_DOMAIN = os.getenv('SAAS_ROOT_DOMAIN', 'localhost')
-# Ensure session and CSRF cookies work across subdomains used for tenants
-SESSION_COOKIE_DOMAIN = f".{SAAS_ROOT_DOMAIN}"
-CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
-CSRF_TRUSTED_ORIGINS += [f'http://*.{SAAS_ROOT_DOMAIN}:5085']
+# Single domain deployment
+SESSION_COOKIE_DOMAIN = SAAS_ROOT_DOMAIN
+CSRF_COOKIE_DOMAIN = SAAS_ROOT_DOMAIN
+CSRF_TRUSTED_ORIGINS += [f'http://{SAAS_ROOT_DOMAIN}:5085']
 ########################################
