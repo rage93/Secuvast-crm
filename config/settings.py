@@ -100,6 +100,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'apps.companies.root_redirect_middleware.RootDomainRedirectMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'apps.companies.user_middleware.CurrentUserMiddleware',

@@ -18,7 +18,7 @@ urlpatterns = [
     path('pages/team/profile-overview/', views.profile_overview, name="profile_overview"),
     path('pages/team/projects/', views.all_projects, name="projects"),
     path('pages/profile/projects/', views.projects, name="profile_projects"),
-    path('pages/team/messages/', views.messages, name="messages"),
+    path('pages/team/messages/', views.team_messages, name="team_messages"),
     path('pages/team/reports/', views.reports, name="reports"),
     path('pages/team/new-user/', views.new_user, name="new_user"),
     # Pages -> Accounts
