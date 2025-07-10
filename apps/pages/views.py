@@ -86,7 +86,7 @@ def projects(request):
   return render(request, 'pages/profile/projects.html', context)
 
 
-def messages(request):
+def team_messages(request):
   context = {
     'parent': 'team',
     'segment': 'messages'
