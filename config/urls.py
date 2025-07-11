@@ -21,6 +21,8 @@ urlpatterns = [
     path('', include('apps.file_manager.urls')),
     path('company/', include('apps.companies.urls')),
     path("users/", include("apps.users.urls")),
+    path('auth/', include('apps.auth.urls')),
+    path('checkout/', include('apps.checkouts.urls')),
     path('stripe/webhook/', apps.companies.views.stripe_webhook, name='stripe_webhook'),
     path('accounts/', include('allauth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),

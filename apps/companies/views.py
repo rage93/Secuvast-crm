@@ -93,6 +93,12 @@ def signup_company(request):
                 created_by=request.user,
                 life_cycle=Company.LifeCycle.SUSPENDED,
             )
+            from apps.customers.models import Customer
+            Customer.objects.create(
+                company=company,
+                init_email=request.user.email,
+                init_email_confirmed=False,
+            )
             profile = request.user.profile
             profile.company = company
             profile.role = "admin"

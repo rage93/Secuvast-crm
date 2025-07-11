@@ -76,6 +76,10 @@ INSTALLED_APPS = [
     'apps.tasks',
     'apps.companies',
     'apps.users',
+    'apps.auth',
+    'apps.checkouts',
+    'apps.customers',
+    'apps.subscriptions',
     'apps.react',
 
     'allauth',
